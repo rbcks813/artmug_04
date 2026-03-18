@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>현Log 작가 | Video Editor</title>
+    <style>
+        /* [Font Setup] Paperlogy */
+        @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+        @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+        @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+
+        :root {
+            --bg: #f8f9fb;
+            --card: #ffffff;
+            --text-main: #222;
+            --text-sub: #8e8e93;
+            --border: #f0f0f2;
+            --radius-xl: 32px;
+            --radius-lg: 18px;
+            --status-online: #2ecc71;
+            --status-away: #f1c40f;
+            --status-offline: #e74c3c;
+            --color-magam: #333;      
+            --color-holiday: #ff3b30;   
+            --bg-weekend: #fff8f8;    
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Paperozi', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
+
+        /* [1] 연락 가능 여부 */
+        .status-section { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
+        .statusTitlePill { display: flex; align-items: center; gap: 8px; padding: 8px 24px; background: #fff; border-radius: 100px; border: 1px solid var(--border); font-size: 12px; font-weight: 900; color: #666; }
+        .statusTitlePill .dot { width: 5px; height: 5px; background: #000; border-radius: 50%; }
+        .statusOptions { display: flex; gap: 10px; }
+        .statusOption { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 700; color: #bbb; background: #fff; border: 1px solid var(--border); transition: 0.3s ease; }
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; background: #eee; }
+        .statusOption.active-online { border-color: var(--status-online); color: #000; }
+        .statusOption.active-online .status-indicator { background: var(--status-online); box-shadow: 0 0 8px var(--status-online); }
+        .statusOption.active-away { border-color: var(--status-away); color: #000; }
+        .statusOption.active-away .status-indicator { background: var(--status-away); box-shadow: 0 0 8px var(--status-away); }
+        .statusOption.active-offline { border-color: var(--status-offline); color: #000; }
+        .statusOption.active-offline .status-indicator { background: var(--status-offline); box-shadow: 0 0 8px var(--status-offline); }
+
+        /* 공통 카드 스타일 */
+        .main-card {
+            background: var(--card); padding: 40px; border-radius: var(--radius-xl);
+            border: 1px solid var(--border); margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+        .main-card h3 { font-size: 16px; font-weight: 900; margin: 0 0 25px 0; border-left: 4px solid #000; padding-left: 12px; text-transform: uppercase; }
+
+        /* [2] 작가 프로필 */
+        .header-profile { display: flex; align-items: center; gap: 35px; }
+        .profile-img-box { flex-shrink: 0; width: 140px; height: 140px; border-radius: 30px; overflow: hidden; border: 1px solid var(--border); }
+        .profile-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -1.5px; }
+        .profile-info p { font-size: 15px; color: var(--text-sub); margin: 0; line-height: 1.7; }
+
+        /* [3] 작업 캘린더 */
+        section { margin-bottom: 50px; }
+        .section-title { font-size: 13px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 2px; }
+        .section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--border); }
+
+        .scalendar { background: var(--card); border-radius: var(--radius-xl); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .scalendar__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .scalendar__tabs { display: flex; gap: 6px; background: #f2f2f7; padding: 4px; border-radius: 100px; }
+        .scalendar__tab { padding: 8px 22px; border: none; background: transparent; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 100px; color: #999; }
+        .scalendar__tab.is-active { background: #fff; color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .scalendar__title { font-size: 18px; font-weight: 900; }
+        .scalendar__weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 15px; color: #ddd; font-size: 11px; font-weight: 900; }
+        .scalendar__weekdays div:first-child, .scalendar__weekdays div:last-child { color: #ff8a80; }
+        .scalendar__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .scalendar__cell { min-height: 75px; border-radius: var(--radius-lg); background: #fafafa; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: 0.2s; }
+        .scalendar__cell.is-sun, .scalendar__cell.is-sat { background: var(--bg-weekend); }
+        .scalendar__cell.is-sun .scalendar__date, .scalendar__cell.is-sat .scalendar__date { color: var(--color-holiday); }
+        .scalendar__cell.is-outside { opacity: 0.25; background: #fdfdfd; filter: grayscale(1); }
+        .scalendar__cell.is-today { background: #f0f7ff; border: 1px solid #007aff22; }
+        .scalendar__cell.is-closed { border-color: var(--color-magam); background: #fff; }
+        .scalendar__cell.is-holiday { border-color: var(--color-holiday); background: #fff; }
+        .scalendar__date { font-size: 14px; font-weight: 700; color: #444; }
+        .status-text { font-size: 10px; font-weight: 900; letter-spacing: -0.5px; }
+        .status-text.magam { color: var(--color-magam); }
+        .status-text.holiday { color: var(--color-holiday); }
+
+        /* [4~6] 리스트 스타일 */
+        .must-read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .must-read-item h4 { font-size: 14px; font-weight: 900; margin-bottom: 10px; }
+        .must-read-item ul { list-style: none; padding: 0; margin: 0; font-size: 13.5px; color: #666; }
+        .must-read-item li { margin-bottom: 6px; padding-left: 15px; position: relative; }
+        .must-read-item li::before { content: '⛳'; position: absolute; left: 0; font-size: 9px; }
+
+        .process-container { display: flex; flex-direction: column; gap: 15px; }
+        .process-item { display: flex; gap: 20px; background: #f9f9fb; padding: 25px; border-radius: var(--radius-lg); align-items: flex-start; }
+        .process-step-num { background: #000; color: #fff; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 900; flex-shrink: 0; }
+        .process-content h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 900; }
+        .process-content p { margin: 0; font-size: 13.5px; color: #666; }
+
+        .price-category { margin-bottom: 45px; }
+        .price-cat-name { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 8px; display: block; }
+        .price-cat-desc { font-size: 14px; color: var(--text-sub); padding-bottom: 15px; border-bottom: 2px solid #000; margin-bottom: 20px; }
+        .price-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
+
+        /* [7] 포트폴리오 (추출 및 대체됨) */
+        .portfolio-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .portfolio-nav button { padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border); background: #fff; font-size: 13px; font-weight: 700; color: #999; cursor: pointer; transition: 0.3s; }
+        .portfolio-nav button.active { background: #000; border-color: #000; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .portfolio-sec { display: none; }
+        .portfolio-sec.active { display: block; }
+        .portfolio-stage { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 15px; }
+        .portfolio-slide { position: absolute; inset: 0; opacity: 0; transition: 0.5s; pointer-events: none; }
+        .portfolio-slide.active { opacity: 1; pointer-events: auto; }
+        .portfolio-slide iframe { width: 100%; height: 100%; border: 0; }
+        .arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.9); cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .arrow-prev { left: 10px; } .arrow-next { right: 10px; }
+        .tag-wrap { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        .tag-wrap span { padding: 4px 12px; border-radius: 100px; background: #f2f2f7; font-size: 11px; font-weight: 800; color: #666; }
+        .thumb-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
+        .thumb-btn { flex-shrink: 0; width: 120px; aspect-ratio: 16/9; border-radius: 8px; border: 2px solid transparent; overflow: hidden; cursor: pointer; padding: 0; }
+        .thumb-btn.active { border-color: #000; transform: translateY(-2px); }
+        .thumb-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f9f9fb; border-radius: var(--radius-lg); color: #ccc; font-weight: 900; letter-spacing: 2px; }
+
+        /* [8] 신청 양식 카드 (인터랙티브) */
+        .form-card { background: #000; color: #fff; padding: 50px 40px; border-radius: var(--radius-xl); }
+        .form-card h3 { color: #fff; border-left: 4px solid #fff; margin-bottom: 10px; padding-left: 12px; text-transform: uppercase; }
+        .form-card .subtitle { font-size: 13px; color: #888; margin-bottom: 30px; display: block; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #eee; }
+        .form-group label span { font-size: 12px; color: #666; font-weight: 400; margin-left: 5px; }
+        .form-input { width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 15px; color: #fff; font-family: inherit; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
+        .form-input:focus { outline: none; border-color: #666; background: #222; }
+        textarea.form-input { height: 100px; resize: none; }
+        .toggle-container { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn-toggle { flex: 1; padding: 12px; border: 1px solid #333; background: #1a1a1a; color: #666; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-toggle.active { background: #fff; color: #000; border-color: #fff; }
+        .conditional-input { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease; }
+        .conditional-input.show { max-height: 250px; opacity: 1; margin-top: 10px; }
+        .form-copy-btn { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 100px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+
+        @media (max-width: 650px) {
+            .header-profile { flex-direction: column; text-align: center; }
+            .must-read-grid { grid-template-columns: 1fr; }
+            .form-card { padding: 40px 20px; }
+            .process-item { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <section class="status-section">
+        <div class="statusTitlePill"><span class="dot"></span><span class="titleText">CONTACT STATUS</span></div>
+        <div class="statusOptions">
+            <div id="btn-online" class="statusOption"><div class="status-indicator"></div><span>온라인</span></div>
+            <div id="btn-away" class="statusOption"><div class="status-indicator"></div><span>자리 비움</span></div>
+            <div id="btn-offline" class="statusOption"><div class="status-indicator"></div><span>오프라인</span></div>
+        </div>
+    </section>
+
+    <header class="main-card header-profile">
+        <div class="profile-img-box"><img src="https://github.com/rbcks813/artmug_04/blob/main/Log_logo.webp?raw=true" alt="현Log 작가"></div>
+        <div class="profile-info">
+            <h1>현Log 작가</h1>
+            <p>재미와 템포를 설계하는 영상 편집을 지향합니다.<br>장르에 구애받지 않고 다양한 콘텐츠를 제작하며, <b>골프 전문 지식</b>을 보유하여 영상미를 극대화합니다.</p>
+        </div>
+    </header>
+
+    <section>
+        <div class="section-title">Schedule</div>
+        <div id="scheduleCalendar"></div>
+    </section>
+
+    <div class="main-card">
+        <h3>Must-Read</h3>
+        <div id="mustReadGrid" class="must-read-grid">데이터 로딩 중...</div>
+    </div>
+
+    <div class="main-card">
+        <h3>Work Process</h3>
+        <div id="processContainer" class="process-container">데이터 로딩 중...</div>
+    </div>
+
+    <div class="main-card">
+        <h3>Price List</h3>
+        <div id="priceContainer">데이터 로딩 중...</div>
+    </div>
+
+    <div class="main-card">
+        <h3>Portfolio</h3>
+        <div class="portfolio-nav" id="portfolioNav"></div>
+        <div id="portfolioContainer">데이터 로딩 중...</div>
+    </div>
+
+    <section class="form-card">
+        <h3>유튜브 편집 신청 양식</h3>
+        <span class="subtitle">(+ 직접 작성 및 선택 후 하단 버튼을 눌러 복사해 주세요.)</span>
+
+        <div class="form-group">
+            <label>① 유튜브 채널 링크</label>
+            <input type="text" id="q1" class="form-input" placeholder="채널 URL을 입력해 주세요.">
+        </div>
+
+        <div class="form-group">
+            <label>② 원본 영상 공유 링크</label>
+            <input type="text" id="q2" class="form-input" placeholder="공유 링크(구글 드라이브 등)를 입력해 주세요.">
+        </div>
+
+        <div class="form-group">
+            <label>③ 원본/희망 최종 영상 길이 <span>(+대략적인 길이 필수 기재)</span></label>
+            <input type="text" id="q3" class="form-input" placeholder="예: 원본 30분 / 최종 10분 내외">
+        </div>
+
+        <div class="form-group">
+            <label>④ 영상 콘셉트 및 레퍼런스 자료</label>
+            <textarea id="q4" class="form-input" placeholder="참고 영상 링크나 분위기를 설명해 주세요."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>⑤ 편집점 제공 여부 <span>(+상세 타임라인 작성 필수)</span></label>
+            <div class="toggle-container">
+                <button type="button" class="btn-toggle" onclick="handleToggle('q5', 'O', this)">O</button>
+                <button type="button" class="btn-toggle active" onclick="handleToggle('q5', 'X', this)">X</button>
+            </div>
+            <div id="q5-conditional" class="conditional-input">
+                <textarea id="q5_detail" class="form-input" placeholder="상세한 타임라인(편집점)을 여기에 작성해 주세요."></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>⑥ 영상 소스 제공 여부 <span>(이미지, 효과음, 자막 참고 등)</span></label>
+            <div class="toggle-container">
+                <button type="button" class="btn-toggle" onclick="handleToggle('q6', 'O', this)">O</button>
+                <button type="button" class="btn-toggle active" onclick="handleToggle('q6', 'X', this)">X</button>
+            </div>
+            <div id="q6-conditional" class="conditional-input">
+                <input type="text" id="q6_detail" class="form-input" placeholder="제공해 주실 소스 종류(BGM, 폰트 등)를 적어주세요.">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>⑦ 그 외 요청 사항</label>
+            <textarea id="q7" class="form-input" placeholder="상세 요청 사항을 입력해 주세요."></textarea>
+        </div>
+
+        <button class="form-copy-btn" onclick="copyDynamicForm()">신청 양식 작성 완료 및 복사하기</button>
+    </section>
+</div>
+
+<script>
+    const CONFIG = {
+        statusCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=0&single=true&output=csv',
+        datesCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=1005858538&single=true&output=csv',
+        mustReadCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=2082097684&single=true&output=csv',
+        processCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=136916656&single=true&output=csv',
+        priceCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=578036874&single=true&output=csv',
+        priceCatCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=896433212&single=true&output=csv',
+        portfolioCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=421786207&single=true&output=csv'
+    };
+
+    const PORTFOLIO_CATS = ["골프", "게임", "그 외 영상", "쇼츠"];
+    let formState = { q5: 'X', q6: 'X' };
+
+    function safeParse(row) { return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); }
+    function parseCSV(text) {
+        const rows = text.split(/\r?\n/).map(row => row.split(','));
+        if (rows.length < 1) return [];
+        const headers = rows[0].map(h => h.trim().replace(/^\ufeff/, "").toLowerCase());
+        return rows.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((h, i) => { if (row[i]) obj[h] = row[i].trim(); });
+            return obj;
+        });
+    }
+
+    /* O/X 토글 핸들러 */
+    function handleToggle(qId, val, btn) {
+        formState[qId] = val;
+        btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const conditionalDiv = document.getElementById(`${qId}-conditional`);
+        if (val === 'O') conditionalDiv.classList.add('show');
+        else conditionalDiv.classList.remove('show');
+    }
+
+    /* 신청 양식 복사 로직 */
+    async function copyDynamicForm() {
+        const d = (id) => document.getElementById(id).value || "(미기재)";
+        let q5_ans = formState.q5 === 'O' ? `O (내용: ${d('q5_detail')})` : 'X';
+        let q6_ans = formState.q6 === 'O' ? `O (내용: ${d('q6_detail')})` : 'X';
+
+        const fullText = `[유튜브 편집 신청 양식]
+
+① 유튜브 채널 링크: ${d('q1')}
+② 원본 영상 공유 링크: ${d('q2')}
+③ 원본/희망 최종 영상 길이: ${d('q3')}
+④ 영상 콘셉트 및 레퍼런스: ${d('q4')}
+⑤ 편집점 제공 여부: ${q5_ans}
+⑥ 영상 소스 제공 여부: ${q6_ans}
+⑦ 그 외 요청 사항: ${d('q7')}`;
+
+        try {
+            await navigator.clipboard.writeText(fullText);
+            alert('신청 양식이 복사되었습니다!');
+        } catch (err) { alert('복사 실패. 수동으로 복사해 주세요.'); }
+    }
+
+    /* 연락 상태 업데이트 */
+    async function updateContactStatus() {
+        try {
+            const r = await fetch(CONFIG.statusCsv + "&t=" + Date.now());
+            const text = await r.text();
+            const val = text.split(/\r?\n/)[0].split(",")[1].replace(/['"]/g, "").trim();
+            const btnMap = { '온라인': 'btn-online', '자리비움': 'btn-away', '오프라인': 'btn-offline' };
+            const classMap = { '온라인': 'active-online', '자리비움': 'active-away', '오프라인': 'active-offline' };
+            Object.values(btnMap).forEach(id => document.getElementById(id).classList.remove('active-online', 'active-away', 'active-offline'));
+            if (btnMap[val]) document.getElementById(btnMap[val]).classList.add(classMap[val]);
+        } catch (e) {}
+    }
+
+    /* 포트폴리오 시스템 (추출 및 최신화됨) */
+    async function initPortfolio() {
+        const nav = document.getElementById('portfolioNav');
+        const container = document.getElementById('portfolioContainer');
+        try {
+            const res = await fetch(CONFIG.portfolioCsv + "&t=" + Date.now());
+            const text = await res.text();
+            const rows = text.split(/\r?\n/).slice(1);
+            const data = {};
+            PORTFOLIO_CATS.forEach(c => data[c] = []);
+            rows.forEach(row => {
+                const cols = safeParse(row);
+                if (cols.length >= 2) {
+                    const cat = cols[0].replace(/['"]/g, "").trim();
+                    const id = cols[1].replace(/['"]/g, "").trim();
+                    const tags = cols[2] ? cols[2].replace(/['"]/g, "").trim().split(',').map(t => t.trim()) : [];
+                    if (data[cat]) data[cat].push({ id, tags });
+                }
+            });
+            nav.innerHTML = ''; container.innerHTML = '';
+            PORTFOLIO_CATS.forEach((cat, idx) => {
+                const btn = document.createElement('button');
+                btn.innerText = cat; if (idx === 0) btn.className = 'active';
+                btn.onclick = () => switchPortfolio(cat, btn);
+                nav.appendChild(btn);
+                const sec = document.createElement('div');
+                sec.className = `portfolio-sec ${idx === 0 ? 'active' : ''}`;
+                sec.id = `port-sec-${cat}`;
+                if (data[cat].length === 0) { sec.innerHTML = `<div class="coming-soon">COMING SOON</div>`; }
+                else { sec.innerHTML = renderPortfolioSlider(data[cat], cat); }
+                container.appendChild(sec);
+                if (data[cat].length > 0) setupSliderLogic(sec);
+            });
+        } catch (e) { container.innerHTML = "데이터 로드 실패"; }
+    }
+
+    function renderPortfolioSlider(list, cat) {
+        return `
+            <div class="portfolio-stage">
+                ${list.map((v, i) => `
+                    <div class="portfolio-slide ${i===0?'active':''}" data-index="${i}">
+                        <iframe data-src="https://www.youtube.com/embed/${v.id}?rel=0" allowfullscreen></iframe>
+                    </div>
+                `).join('')}
+                <button class="arrow arrow-prev">❮</button>
+                <button class="arrow arrow-next">❯</button>
+            </div>
+            <div class="tag-container-wrap">
+                ${list.map((v, i) => `
+                    <div class="tag-wrap" data-index="${i}" style="display:${i===0?'flex':'none'}">
+                        ${v.tags.map(t => `<span>#${t.replace('#','')}</span>`).join('')}
+                    </div>
+                `).join('')}
+            </div>
+            <div class="thumb-scroll">
+                ${list.map((v, i) => `
+                    <button class="thumb-btn ${i===0?'active':''}" data-index="${i}">
+                        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg">
+                    </button>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    function setupSliderLogic(sec) {
+        let cur = 0; const slides = sec.querySelectorAll('.portfolio-slide');
+        const tags = sec.querySelectorAll('.tag-wrap'); const thumbs = sec.querySelectorAll('.thumb-btn');
+        const total = slides.length;
+        const move = (idx) => {
+            cur = (idx + total) % total;
+            slides.forEach((s, i) => {
+                const active = i === cur;
+                s.classList.toggle('active', active);
+                tags[i].style.display = active ? 'flex' : 'none';
+                thumbs[i].classList.toggle('active', active);
+                if (active) { const ifr = s.querySelector('iframe'); if (!ifr.src) ifr.src = ifr.dataset.src; }
+            });
+        };
+        sec.querySelector('.arrow-prev').onclick = () => move(cur - 1);
+        sec.querySelector('.arrow-next').onclick = () => move(cur + 1);
+        thumbs.forEach((t, i) => t.onclick = () => move(i));
+        const firstIfr = slides[0].querySelector('iframe');
+        if(firstIfr) firstIfr.src = firstIfr.dataset.src;
+    }
+
+    function switchPortfolio(cat, btn) {
+        document.querySelectorAll('.portfolio-nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.portfolio-sec').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(`port-sec-${cat}`);
+        target.classList.add('active');
+        const firstIfr = target.querySelector('.portfolio-slide.active iframe');
+        if (firstIfr && !firstIfr.src) firstIfr.src = firstIfr.dataset.src;
+    }
+
+    /* 최신 달력 시스템 (5줄 고정) */
+    async function initCalendar() {
+        const mount = document.querySelector("#scheduleCalendar");
+        try {
+            const dRes = await fetch(CONFIG.datesCsv + "&cache=" + Date.now()).then(r => r.text());
+            const dateMap = new Map();
+            parseCSV(dRes).forEach(item => {
+                const key = normalizeDate(item.date);
+                if (key) dateMap.set(key, (item.status || "").replace(/\s/g, ""));
+            });
+            const now = new Date();
+            const months = [new Date(now.getFullYear(), now.getMonth(), 1), new Date(now.getFullYear(), now.getMonth() + 1, 1)];
+            window._renderCal = (idx) => {
+                const target = months[idx];
+                const start = new Date(target.getFullYear(), target.getMonth(), 1);
+                start.setDate(start.getDate() - start.getDay());
+                let html = `<div class="scalendar"><div class="scalendar__head"><div class="scalendar__tabs">
+                ${months.map((m, i) => `<button class="scalendar__tab ${i===idx?'is-active':''}" onclick="_renderCal(${i})">${m.getMonth()+1}월</button>`).join('')}
+                </div><div class="scalendar__title">${target.getFullYear()}.${String(target.getMonth()+1).padStart(2, '0')}</div></div>
+                <div class="scalendar__weekdays"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div>
+                <div class="scalendar__grid">`;
+                for (let i = 0; i < 35; i++) {
+                    const d = new Date(start); d.setDate(start.getDate() + i);
+                    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                    const status = dateMap.get(key) || "";
+                    const isOutside = d.getMonth() !== target.getMonth();
+                    const isToday = key === new Date().toISOString().slice(0, 10);
+                    let stateClass = ""; let statusText = "";
+                    if (status.includes("마감")) { stateClass = "is-closed"; statusText = `<span class="status-text magam">${status}</span>`; }
+                    else if (status.includes("휴무")) { stateClass = "is-holiday"; statusText = `<span class="status-text holiday">휴무</span>`; }
+                    html += `<div class="scalendar__cell ${isOutside?'is-outside':''} ${d.getDay()===0||d.getDay()===6?'is-sun':''} ${isToday?'is-today':''} ${stateClass}"><span class="scalendar__date">${d.getDate()}</span>${statusText}</div>`;
+                }
+                mount.innerHTML = html + `</div></div>`;
+            }
+            _renderCal(0);
+        } catch (e) {}
+    }
+
+    /* 기타 데이터 초기화 */
+    async function initMustRead() {
+        const grid = document.getElementById('mustReadGrid');
+        try {
+            const res = await fetch(CONFIG.mustReadCsv + "&t=" + Date.now());
+            const rows = (await res.text()).split(/\r?\n/).slice(1);
+            const categories = {};
+            rows.forEach(row => {
+                const cols = safeParse(row);
+                if (cols.length >= 2) {
+                    const cat = cols[0].replace(/['"]/g, "").trim();
+                    const content = cols[1].replace(/['"]/g, "").trim();
+                    if (!categories[cat]) categories[cat] = [];
+                    if (content) categories[cat].push(content);
+                }
+            });
+            let html = '';
+            for (const [title, list] of Object.entries(categories)) {
+                html += `<div class="must-read-item"><h4>${title}</h4><ul>${list.map(li => `<li>${li}</li>`).join('')}</ul></div>`;
+            }
+            grid.innerHTML = html;
+        } catch (e) {}
+    }
+
+    async function initProcess() {
+        const container = document.getElementById('processContainer');
+        try {
+            const res = await fetch(CONFIG.processCsv + "&t=" + Date.now());
+            const rows = (await res.text()).split(/\r?\n/).slice(1);
+            let html = '';
+            rows.forEach(row => {
+                const cols = safeParse(row);
+                if (cols.length >= 2) {
+                    const step = cols[0].replace(/['"]/g, "").trim();
+                    const title = cols[1].replace(/['"]/g, "").trim();
+                    const desc = cols[2] ? cols[2].replace(/['"]/g, "").trim() : "";
+                    html += `<div class="process-item"><div class="process-step-num">${step}</div><div class="process-content"><h4>${title}</h4>${desc ? `<p>${desc}</p>` : ''}</div></div>`;
+                }
+            });
+            container.innerHTML = html;
+        } catch (e) {}
+    }
+
+    async function initPriceList() {
+        const container = document.getElementById('priceContainer');
+        try {
+            const [catRes, itemRes] = await Promise.all([
+                fetch(CONFIG.priceCatCsv + "&t=" + Date.now()).then(r => r.text()),
+                fetch(CONFIG.priceCsv + "&t=" + Date.now()).then(r => r.text())
+            ]);
+            const catData = parseCSV(catRes).map(c => ({ name: c.name, desc: (c.description || "").replace(/\|/g, '<br>') }));
+            const itemGroups = {};
+            parseCSV(itemRes).forEach(i => {
+                if (!itemGroups[i.category]) itemGroups[i.category] = [];
+                itemGroups[i.category].push({ name: i.item, price: i.price });
+            });
+            let html = '';
+            catData.forEach(cat => {
+                const items = itemGroups[cat.name] || [];
+                if (items.length === 0) return;
+                html += `<div class="price-category"><span class="price-cat-name">${cat.name}</span><p class="price-cat-desc">${cat.desc}</p><div class="price-items-list">${items.map(item => `<div class="price-item"><span class="price-name">${item.name}</span><span class="price-val">${item.price}</span></div>`).join('')}</div></div>`;
+            });
+            container.innerHTML = html;
+        } catch (e) {}
+    }
+
+    function normalizeDate(dateStr) {
+        if (!dateStr) return "";
+        const p = dateStr.replace(/[^0-9]/g, '-').split('-').filter(x => x !== "");
+        if (p.length < 3) return "";
+        const y = p[0].length === 4 ? p[0] : (p[2].length === 4 ? p[2] : p[0]);
+        const m = p[0].length === 4 ? p[1] : p[0];
+        const d = p[0].length === 4 ? p[2] : p[1];
+        return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+
+    updateContactStatus(); initCalendar(); initPriceList(); initMustRead(); initProcess(); initPortfolio(); setInterval(updateContactStatus, 15000);
+</script>
+
+</body>
+</html>
