@@ -10,6 +10,11 @@
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
+        /* [모바일 사이즈 및 레이아웃 엇나감 방지] */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         :root {
             --bg: #f8f9fb;
             --card: #ffffff;
@@ -26,13 +31,16 @@
             --bg-weekend: #fff8f8;    
         }
 
-        body {
+        html, body {
             margin: 0; padding: 0;
             font-family: 'Paperozi', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             line-height: 1.6;
             word-break: keep-all;
+            /* [모바일 임베드 스크롤 먹통 방지] */
+            overflow-x: hidden; 
+            -webkit-overflow-scrolling: touch; 
         }
 
         .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
@@ -105,7 +113,7 @@
         .process-content h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 900; }
         .process-content p { margin: 0; font-size: 13.5px; color: #666; }
 
-        /* 가격표 디자인 (첫 번째 코드 스타일 적용) */
+        /* 가격표 디자인 */
         .price-category { margin-bottom: 45px; }
         .price-category:last-child { margin-bottom: 0; }
         .price-cat-name { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 8px; letter-spacing: -0.5px; display: block; }
@@ -152,11 +160,31 @@
         .conditional-input.show { max-height: 250px; opacity: 1; margin-top: 10px; }
         .form-copy-btn { width: 100%; background: #fff; color: #000; border: none; padding: 18px; border-radius: 100px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 20px; transition: 0.3s; }
 
+        /* [모바일 사이즈 전면 최적화] */
         @media (max-width: 650px) {
-            .header-profile { flex-direction: column; text-align: center; }
-            .must-read-grid { grid-template-columns: 1fr; }
-            .form-card { padding: 40px 20px; }
-            .process-item { flex-direction: column; }
+            .container { padding: 20px 15px; }
+            .statusOptions { flex-wrap: wrap; justify-content: center; }
+            .header-profile { flex-direction: column; text-align: center; gap: 20px; }
+            .profile-img-box { width: 110px; height: 110px; }
+            .main-card { padding: 25px 20px; margin-bottom: 30px; }
+            
+            .scalendar { padding: 20px 10px; }
+            .scalendar__cell { min-height: 55px; gap: 2px; }
+            .scalendar__date { font-size: 13px; }
+            .scalendar__weekdays { font-size: 10px; }
+            .status-text { font-size: 9px; }
+
+            .must-read-grid { grid-template-columns: 1fr; gap: 20px; }
+            .process-item { flex-direction: column; padding: 20px; gap: 12px; }
+            
+            .price-cat-name { font-size: 18px; }
+            .price-cat-desc { font-size: 13px; margin-bottom: 15px; }
+            .price-name { font-size: 14px; }
+            .price-val { font-size: 15px; }
+
+            .portfolio-nav button { padding: 8px 16px; font-size: 12px; }
+            .form-card { padding: 35px 20px; }
+            .form-copy-btn { font-size: 15px; padding: 15px; }
         }
     </style>
 </head>
@@ -306,7 +334,6 @@
         } catch (e) {}
     }
 
-    /* 가격표 로직: 첫 번째 코드의 initPriceList 적용 (줄바꿈 대응 포함) */
     async function initPriceList() {
         const container = document.getElementById('priceContainer');
         try {
