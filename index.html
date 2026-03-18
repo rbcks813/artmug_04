@@ -204,7 +204,7 @@
         <div class="profile-img-box"><img src="https://github.com/rbcks813/artmug_04/blob/main/Log_logo.webp?raw=true" alt="현Log 작가"></div>
         <div class="profile-info">
             <h1>현Log 작가</h1>
-            <p>재미와 템포를 설계하는 영상 편집을 지향합니다.<br>장르에 구애받지 않고 다양한 콘텐츠를 제작하며,<br><b>골프 전문 지식</b>을 보유하여 영상미를 극대화합니다.</p>
+            <p>재미와 템포를 설계하는 영상 편집을 지향합니다.<br>장르에 구애받지 않고 다양한 콘텐츠를 제작하며, <b>골프 전문 지식</b>을 보유하여 영상미를 극대화합니다.</p>
         </div>
     </header>
 
@@ -314,12 +314,49 @@
         else conditionalDiv.classList.remove('show');
     }
 
+    /* 모바일 대응 통합 복사 함수 */
     async function copyDynamicForm() {
         const d = (id) => document.getElementById(id).value || "(미기재)";
         let q5_ans = formState.q5 === 'O' ? `O (내용: ${d('q5_detail')})` : 'X';
         let q6_ans = formState.q6 === 'O' ? `O (내용: ${d('q6_detail')})` : 'X';
-        const fullText = `[유튜브 편집 신청 양식]\n\n① 유튜브 채널 링크: ${d('q1')}\n② 원본 영상 공유 링크: ${d('q2')}\n③ 원본/희망 최종 영상 길이: ${d('q3')}\n④ 영상 콘셉트 및 레퍼런스: ${d('q4')}\n⑤ 편집점 제공 여부: ${q5_ans}\n⑥ 영상 소스 제공 여부: ${q6_ans}\n⑦ 그 외 요청 사항: ${d('q7')}`;
-        try { await navigator.clipboard.writeText(fullText); alert('신청 양식이 복사되었습니다!'); } catch (err) { alert('복사 실패. 수동으로 복사해 주세요.'); }
+
+        const fullText = `[유튜브 편집 신청 양식]
+
+① 유튜브 채널 링크: ${d('q1')}
+② 원본 영상 공유 링크: ${d('q2')}
+③ 원본/희망 최종 영상 길이: ${d('q3')}
+④ 영상 콘셉트 및 레퍼런스: ${d('q4')}
+⑤ 편집점 제공 여부: ${q5_ans}
+⑥ 영상 소스 제공 여부: ${q6_ans}
+⑦ 그 외 요청 사항: ${d('q7')}`;
+
+        // 방법 1: 최신 Clipboard API 시도
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(fullText);
+                alert('신청 양식이 복사되었습니다!');
+                return;
+            } catch (err) {}
+        }
+
+        // 방법 2: 구형/인앱 브라우저용 Fallback (가상 Textarea 생성)
+        try {
+            const textArea = document.createElement("textarea");
+            textArea.value = fullText;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // 모바일 iOS 대응
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            if(successful) alert('신청 양식이 복사되었습니다!');
+            else throw new Error();
+        } catch (err) {
+            alert('복사에 실패했습니다. 내용을 드래그하여 수동으로 복사해 주세요.');
+        }
     }
 
     async function updateContactStatus() {
