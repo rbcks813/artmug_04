@@ -61,8 +61,8 @@
         .statusTitlePill { display: flex; align-items: center; gap: 8px; padding: 8px 24px; background: #fff; border-radius: 100px; border: 1px solid var(--border); font-size: 12px; font-weight: 900; color: #666; }
         .statusTitlePill .dot { width: 5px; height: 5px; background: #000; border-radius: 50%; }
         .statusOptions { display: flex; gap: 10px; }
-        .statusOption { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 700; color: #bbb; background: #fff; border: 1px solid var(--border); transition: 0.3s ease; }
-        .status-indicator { width: 10px; height: 10px; border-radius: 50%; background: #eee; }
+        .statusOption { display: flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 700; color: #bbb; background: #fff; border: 1px solid var(--border); transition: 0.3s ease; white-space: nowrap; }
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; background: #eee; flex-shrink: 0; }
         .statusOption.active-online { border-color: var(--status-online); color: #000; }
         .statusOption.active-online .status-indicator { background: var(--status-online); box-shadow: 0 0 8px var(--status-online); }
         .statusOption.active-away { border-color: var(--status-away); color: #000; }
@@ -101,15 +101,11 @@
         .scalendar__weekdays div:first-child, .scalendar__weekdays div:last-child { color: #ff8a80; }
         .scalendar__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         
-        /* 캘린더 셀 스타일: 두께를 2px로 고정 */
         .scalendar__cell { min-height: 75px; border-radius: var(--radius-lg); background: #fafafa; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: 0.2s; }
         .scalendar__cell.is-sun, .scalendar__cell.is-sat { background: var(--bg-weekend); }
         .scalendar__cell.is-sun .scalendar__date, .scalendar__cell.is-sat .scalendar__date { color: var(--color-holiday); }
         .scalendar__cell.is-outside { opacity: 0.25; background: #fdfdfd; filter: grayscale(1); }
-        
-        /* 오늘 날짜: 선색은 유지(transparent 또는 상태색), 배경색만 강제 유지 */
         .scalendar__cell.is-today { background: #f0f7ff !important; }
-        
         .scalendar__cell.is-closed { border-color: var(--color-magam); }
         .scalendar__cell.is-holiday { border-color: var(--color-holiday); }
         .scalendar__date { font-size: 14px; font-weight: 700; color: #444; }
@@ -179,7 +175,12 @@
 
         @media (max-width: 650px) {
             .container { padding: 20px 15px; }
-            .statusOptions { flex-wrap: wrap; justify-content: center; }
+            
+            /* CONTACT STATUS 모바일 최적화: 한 줄 유지 */
+            .statusOptions { gap: 6px; width: 100%; justify-content: space-between; }
+            .statusOption { padding: 10px 8px; font-size: 11.5px; flex: 1; justify-content: center; gap: 6px; }
+            .status-indicator { width: 8px; height: 8px; }
+
             .header-profile { flex-direction: column; text-align: center; gap: 20px; }
             .profile-img-box { width: 110px; height: 110px; }
             .main-card { padding: 25px 20px; margin-bottom: 30px; }
