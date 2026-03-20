@@ -31,6 +31,7 @@
             --bg-weekend: #fff8f8;    
         }
 
+        /* [수정] 모바일 임베드 스크롤 버그 해결을 위해 body의 overflow 관련 속성 제거 */
         html, body {
             margin: 0; padding: 0;
             font-family: 'Paperozi', sans-serif;
@@ -38,11 +39,15 @@
             color: var(--text-main);
             line-height: 1.6;
             word-break: keep-all;
-            overflow-x: hidden; 
-            -webkit-overflow-scrolling: touch; 
         }
 
-        .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
+        /* [수정] 가로 스크롤 방지 속성을 container로 이동 */
+        .container { 
+            max-width: 780px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            overflow-x: hidden; 
+        }
 
         /* [아이콘 데코 스타일] */
         .deco-icon-inline { width: 24px; height: 24px; vertical-align: middle; margin-left: 6px; object-fit: contain; }
