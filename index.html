@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>현Log 작가 | Video Editor</title>
     <style>
-        /* [Font Setup] Paperlogy */
+        /* [폰트 설정] Paperlogy */
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
-        /* [모바일 사이즈 및 레이아웃 엇나감 방지] */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        /* 기본 레이아웃 초기화 */
+        *, *::before, *::after { box-sizing: border-box; }
 
         :root {
             --bg: #ffffff; 
@@ -44,19 +42,19 @@
 
         .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
 
-        /* [아이콘 데코 스타일] */
+        /* 데코레이션 아이콘 스타일 */
         .deco-icon-inline { width: 24px; height: 24px; vertical-align: middle; margin-left: 6px; object-fit: contain; }
         .deco-icon-floating { position: absolute; top: -25px; right: 25px; width: 60px; height: 60px; object-fit: contain; pointer-events: none; z-index: 1; }
         .deco-icon-floating-left { position: absolute; top: -25px; left: 25px; width: 60px; height: 60px; object-fit: contain; pointer-events: none; z-index: 1; }
         .deco-icon-title { width: 35px; height: auto; margin-bottom: -5px; }
 
-        /* [위치 조정 특정 클래스] */
+        /* 위치 조정용 유틸리티 */
         .pos-top-stick { top: -48px !important; } 
         .pos-cart { top: -40px !important; }      
         .pos-must-read { top: -42px !important; } 
         .pos-price { top: 22px !important; }      
 
-        /* [1] 연락 가능 여부 */
+        /* 작업 상태 표시 바 */
         .status-section { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
         .statusTitlePill { display: flex; align-items: center; gap: 8px; padding: 8px 24px; background: #fff; border-radius: 100px; border: 1px solid var(--border); font-size: 12px; font-weight: 900; color: #666; }
         .statusTitlePill .dot { width: 5px; height: 5px; background: #000; border-radius: 50%; }
@@ -70,7 +68,7 @@
         .statusOption.active-offline { border-color: var(--status-offline); color: #000; }
         .statusOption.active-offline .status-indicator { background: var(--status-offline); box-shadow: 0 0 8px var(--status-offline); }
 
-        /* 공통 카드 스타일 */
+        /* 공통 카드 디자인 */
         .main-card {
             position: relative; 
             background: var(--card); padding: 40px; border-radius: var(--radius-xl);
@@ -79,41 +77,41 @@
         }
         .main-card h3 { position: relative; z-index: 2; font-size: 16px; font-weight: 900; margin: 0 0 25px 0; border-left: 4px solid #000; padding-left: 12px; text-transform: uppercase; }
 
-        /* [2] 작가 프로필 */
+        /* 프로필 헤더 */
         .header-profile { display: flex; align-items: center; gap: 35px; }
         .profile-img-box { flex-shrink: 0; width: 140px; height: 140px; border-radius: 30px; overflow: hidden; border: 1px solid var(--border); }
         .profile-img-box img { width: 100%; height: 100%; object-fit: cover; }
         .profile-info h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -1.5px; display: flex; align-items: center; }
         .profile-info p { font-size: 15px; color: var(--text-sub); margin: 0; line-height: 1.7; }
 
-        /* [3] 작업 캘린더 */
+        /* [리팩토링] 캘린더 전용 스타일 (BEM 미사용) */
         section { margin-bottom: 50px; }
         .section-title { font-size: 13px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #ccc; text-transform: uppercase; letter-spacing: 2px; }
         .section-title::after { content: ''; flex-grow: 1; height: 1px; background: var(--border); }
 
-        .scalendar { background: var(--card); border-radius: var(--radius-xl); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid var(--border); }
-        .scalendar__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-        .scalendar__tabs { display: flex; gap: 6px; background: #f2f2f7; padding: 4px; border-radius: 100px; }
-        .scalendar__tab { padding: 8px 22px; border: none; background: transparent; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 100px; color: #999; }
-        .scalendar__tab.is-active { background: #fff; color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .scalendar__title { font-size: 18px; font-weight: 900; }
-        .scalendar__weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 15px; color: #ddd; font-size: 11px; font-weight: 900; }
-        .scalendar__weekdays div:first-child, .scalendar__weekdays div:last-child { color: #ff8a80; }
-        .scalendar__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .calendar-wrapper { background: var(--card); border-radius: var(--radius-xl); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .cal-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .month-selector { display: flex; gap: 6px; background: #f2f2f7; padding: 4px; border-radius: 100px; }
+        .tab-item { padding: 8px 22px; border: none; background: transparent; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 100px; color: #999; }
+        .tab-item.js-active { background: #fff; color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .current-month-label { font-size: 18px; font-weight: 900; }
+        .weekday-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 15px; color: #ddd; font-size: 11px; font-weight: 900; }
+        .weekday-header div:first-child, .weekday-header div:last-child { color: #ff8a80; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         
-        .scalendar__cell { min-height: 75px; border-radius: var(--radius-lg); background: #fafafa; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: 0.2s; }
-        .scalendar__cell.is-sun, .scalendar__cell.is-sat { background: var(--bg-weekend); }
-        .scalendar__cell.is-sun .scalendar__date, .scalendar__cell.is-sat .scalendar__date { color: var(--color-holiday); }
-        .scalendar__cell.is-outside { opacity: 0.25; background: #fdfdfd; filter: grayscale(1); }
-        .scalendar__cell.is-today { background: #f0f7ff !important; }
-        .scalendar__cell.is-closed { border-color: var(--color-magam); }
-        .scalendar__cell.is-holiday { border-color: var(--color-holiday); }
-        .scalendar__date { font-size: 14px; font-weight: 700; color: #444; }
-        .status-text { font-size: 10px; font-weight: 900; letter-spacing: -0.5px; }
-        .status-text.magam { color: var(--color-magam); }
-        .status-text.holiday { color: var(--color-holiday); }
+        .date-box { min-height: 75px; border-radius: var(--radius-lg); background: #fafafa; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: 0.2s; }
+        .date-box.is-weekend { background: var(--bg-weekend); }
+        .date-box.is-weekend .date-num { color: var(--color-holiday); }
+        .date-box.is-dimmed { opacity: 0.25; background: #fdfdfd; filter: grayscale(1); }
+        .date-box.js-today { background: #f0f7ff !important; }
+        .date-box.status-closed { border-color: var(--color-magam); }
+        .date-box.status-holiday { border-color: var(--color-holiday); }
+        .date-num { font-size: 14px; font-weight: 700; color: #444; }
+        .badge-text { font-size: 10px; font-weight: 900; letter-spacing: -0.5px; }
+        .badge-text.type-magam { color: var(--color-magam); }
+        .badge-text.type-holiday { color: var(--color-holiday); }
 
-        /* [4~6] 리스트 스타일 */
+        /* 안내 사항 및 프로세스 */
         .must-read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; z-index: 2; }
         .must-read-item h4 { font-size: 14px; font-weight: 900; margin-bottom: 10px; }
         .must-read-item ul { list-style: none; padding: 0; margin: 0; font-size: 13.5px; color: #666; }
@@ -126,17 +124,15 @@
         .process-content h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 900; }
         .process-content p { margin: 0; font-size: 13.5px; color: #666; }
 
-        /* 가격표 디자인 */
+        /* 가격 정보 */
         .price-category { margin-bottom: 45px; position: relative; z-index: 2; }
-        .price-category:last-child { margin-bottom: 0; }
         .price-cat-name { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 8px; letter-spacing: -0.5px; display: block; }
         .price-cat-desc { font-size: 14px; color: var(--text-sub); margin: 0 0 20px 0; line-height: 1.5; padding-bottom: 15px; border-bottom: 2px solid #000; }
         .price-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
-        .price-item:last-child { border-bottom: none; }
         .price-name { font-size: 15.5px; font-weight: 700; color: #333; }
         .price-val { font-size: 16px; font-weight: 900; color: #000; }
 
-        /* [7] 포트폴리오 */
+        /* 포트폴리오 슬라이더 */
         .portfolio-nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
         .portfolio-nav button { padding: 10px 20px; border-radius: 100px; border: 1px solid var(--border); background: #fff; font-size: 13px; font-weight: 700; color: #999; cursor: pointer; transition: 0.3s; }
         .portfolio-nav button.active { background: #000; border-color: #000; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -156,7 +152,7 @@
         .thumb-btn img { width: 100%; height: 100%; object-fit: cover; }
         .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f9f9fb; border-radius: var(--radius-lg); color: #ccc; font-weight: 900; letter-spacing: 2px; }
 
-        /* [8] 신청 양식 카드 */
+        /* 신청 양식 카드 */
         .form-card { position: relative; background: #000; color: #fff; padding: 50px 40px; border-radius: var(--radius-xl); }
         .form-card h3 { color: #fff; border-left: 4px solid #fff; margin-bottom: 10px; padding-left: 12px; text-transform: uppercase; display: flex; align-items: center; }
         .form-card .subtitle { font-size: 13px; color: #888; margin-bottom: 30px; display: block; }
@@ -175,16 +171,12 @@
 
         @media (max-width: 650px) {
             .container { padding: 20px 15px; }
-            
-            /* CONTACT STATUS 모바일 최적화: 한 줄 유지 */
             .statusOptions { gap: 6px; width: 100%; justify-content: space-between; }
             .statusOption { padding: 10px 8px; font-size: 11.5px; flex: 1; justify-content: center; gap: 6px; }
             .status-indicator { width: 8px; height: 8px; }
-
             .header-profile { flex-direction: column; text-align: center; gap: 20px; }
             .profile-img-box { width: 110px; height: 110px; }
             .main-card { padding: 25px 20px; margin-bottom: 30px; }
-            
             .deco-icon-floating, .deco-icon-floating-left { width: 45px; height: 45px; }
             .pos-top-stick { top: -38px !important; } 
             .pos-cart { top: -30px !important; } 
@@ -192,22 +184,13 @@
             .pos-price { top: 12px !important; } 
             .deco-icon-floating { right: 15px; }
             .deco-icon-floating-left { left: 15px; }
-            
-            .scalendar { padding: 20px 10px; }
-            .scalendar__cell { min-height: 55px; gap: 2px; border-width: 2px; }
-            .scalendar__date { font-size: 13px; }
-            .scalendar__weekdays { font-size: 10px; }
-            .status-text { font-size: 9px; }
-
+            .calendar-wrapper { padding: 20px 10px; }
+            .date-box { min-height: 55px; gap: 2px; border-width: 2px; }
+            .date-num { font-size: 13px; }
+            .weekday-header { font-size: 10px; }
+            .badge-text { font-size: 9px; }
             .must-read-grid { grid-template-columns: 1fr; gap: 20px; }
             .process-item { flex-direction: column; padding: 20px; gap: 12px; }
-            
-            .price-cat-name { font-size: 18px; }
-            .price-cat-desc { font-size: 13px; margin-bottom: 15px; }
-            .price-name { font-size: 14px; }
-            .price-val { font-size: 15px; }
-
-            .portfolio-nav button { padding: 8px 16px; font-size: 12px; }
             .form-card { padding: 35px 20px; }
             .form-copy-btn { font-size: 15px; padding: 15px; }
         }
@@ -236,7 +219,7 @@
 
     <section>
         <div class="section-title">Schedule <img src="https://github.com/rbcks813/artmug_04/blob/main/m4.png?raw=true" class="deco-icon-title" alt="데코"></div>
-        <div id="scheduleCalendar"></div>
+        <div id="calendarMount"></div>
     </section>
 
     <div class="main-card">
@@ -320,180 +303,338 @@
 </div>
 
 <script>
-    const CONFIG = {
-        statusCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=0&single=true&output=csv',
-        datesCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=1005858538&single=true&output=csv',
-        mustReadCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=2082097684&single=true&output=csv',
-        processCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=136916656&single=true&output=csv',
-        priceCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=578036874&single=true&output=csv',
-        priceCatCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=896433212&single=true&output=csv',
-        portfolioCsv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=421786207&single=true&output=csv'
+    /**
+     * 구글 시트 데이터 URL 설정
+     */
+    const DATA_SOURCES = {
+        status: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=0&single=true&output=csv',
+        schedule: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=1005858538&single=true&output=csv',
+        rules: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=2082097684&single=true&output=csv',
+        workflow: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=136916656&single=true&output=csv',
+        prices: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=578036874&single=true&output=csv',
+        priceCats: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=896433212&single=true&output=csv',
+        works: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp_1PS0ZCyIGWmNhH02CsqUHvrULQ737CUrJ2JTMKJ_zOTbPCqFuehKAOGMe4VqhAwno1tqR-yZvT2/pub?gid=421786207&single=true&output=csv'
     };
 
-    const PORTFOLIO_CATS = ["골프", "게임", "그 외 영상", "쇼츠"];
+    const PORTFOLIO_LABELS = ["골프", "게임", "그 외 영상", "쇼츠"];
     let formState = { q5: 'X', q6: 'X' };
 
-    function safeParse(row) { return row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); }
-    
-    function handleToggle(qId, val, btn) {
-        formState[qId] = val;
-        btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const conditionalDiv = document.getElementById(`${qId}-conditional`);
-        if (val === 'O') conditionalDiv.classList.add('show');
-        else conditionalDiv.classList.remove('show');
-    }
+    /**
+     * 공통 유틸리티 함수
+     */
+    const parseCsvRow = (row) => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const stripQuotes = (str) => (str || "").replace(/['"]/g, "").trim();
 
-    async function copyDynamicForm() {
-        const d = (id) => document.getElementById(id).value || "(미기재)";
-        let q5_ans = formState.q5 === 'O' ? `O (내용: ${d('q5_detail')})` : 'X';
-        let q6_ans = formState.q6 === 'O' ? `O (내용: ${d('q6_detail')})` : 'X';
+    const formatDateKey = (str) => {
+        if (!str) return "";
+        const parts = str.replace(/[^0-9]/g, '-').split('-').filter(p => p !== "");
+        if (parts.length < 3) return "";
+        const y = parts[0].length === 4 ? parts[0] : (parts[2].length === 4 ? parts[2] : parts[0]);
+        const m = parts[0].length === 4 ? parts[1] : parts[0];
+        const d = parts[0].length === 4 ? parts[2] : parts[1];
+        return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    };
 
-        const fullText = `[유튜브 편집 신청 양식]
+    /**
+     * [신규 설계] 캘린더 관리 클래스 (객체 지향 방식)
+     */
+    class ScheduleCalendar {
+        constructor(mountPointId) {
+            this.container = document.getElementById(mountPointId);
+            this.dataMap = {}; // Map 대신 일반 객체 사용
+            this.today = new Date().toISOString().slice(0, 10);
+            this.displayMonths = this.initTargetMonths();
+        }
 
-① 유튜브 채널 링크: ${d('q1')}
-② 원본 영상 공유 링크: ${d('q2')}
-③ 원본/희망 최종 영상 길이: ${d('q3')}
-④ 영상 콘셉트 및 레퍼런스: ${d('q4')}
-⑤ 편집점 제공 여부: ${q5_ans}
-⑥ 영상 소스 제공 여부: ${q6_ans}
-⑦ 그 외 요청 사항: ${d('q7')}`;
+        // 현재 달과 다음 달 날짜 객체 생성
+        initTargetMonths() {
+            const now = new Date();
+            return [
+                new Date(now.getFullYear(), now.getMonth(), 1),
+                new Date(now.getFullYear(), now.getMonth() + 1, 1)
+            ];
+        }
 
-        if (navigator.clipboard && window.isSecureContext) {
+        // 구글 시트에서 일정 데이터 호출
+        async loadData() {
             try {
-                await navigator.clipboard.writeText(fullText);
-                alert('신청 양식이 복사되었습니다!');
-                return;
-            } catch (err) {}
+                const response = await fetch(`${DATA_SOURCES.schedule}&t=${Date.now()}`);
+                const csvText = await response.text();
+                const lines = csvText.split(/\r?\n/).slice(1);
+                
+                // Array.from().forEach()로 반복문 스타일 변경
+                Array.from(lines).forEach(line => {
+                    const cols = line.split(',');
+                    if (cols.length >= 2) {
+                        const dateKey = formatDateKey(stripQuotes(cols[0]));
+                        if (dateKey) this.dataMap[dateKey] = stripQuotes(cols[1]).replace(/\s/g, "");
+                    }
+                });
+                this.render(0); // 초기 화면: 이번 달
+            } catch (err) { console.error("일정 로드 실패", err); }
         }
 
-        try {
-            const textArea = document.createElement("textarea");
-            textArea.value = fullText;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            textArea.setSelectionRange(0, 99999); 
-            const successful = document.execCommand('copy');
-            document.body.removeChild(textArea);
-            if(successful) alert('신청 양식이 복사되었습니다!');
-            else throw new Error();
-        } catch (err) {
-            alert('복사에 실패했습니다. 내용을 드래그하여 수동으로 복사해 주세요.');
+        // DOM 요소를 생성하는 헬퍼 함수 (innerHTML 대체)
+        makeEl(tag, options = {}, children = []) {
+            const el = document.createElement(tag);
+            Object.entries(options).forEach(([key, val]) => {
+                if (key === 'className') el.className = val;
+                else if (key === 'style') el.style.cssText = val;
+                else el[key] = val;
+            });
+            children.forEach(child => {
+                if (typeof child === 'string') el.appendChild(document.createTextNode(child));
+                else if (child) el.appendChild(child);
+            });
+            return el;
+        }
+
+        // 캘린더 화면 그리기
+        render(index) {
+            const targetMonth = this.displayMonths[index];
+            this.container.innerHTML = ''; // 초기화
+
+            const wrapper = this.makeEl('div', { className: 'calendar-wrapper' });
+
+            // 상단 바 (월 선택 탭 및 제목)
+            const tabs = this.makeEl('div', { className: 'month-selector' }, 
+                this.displayMonths.map((m, i) => this.makeEl('button', {
+                    className: `tab-item ${i === index ? 'js-active' : ''}`,
+                    innerText: `${m.getMonth() + 1}월`,
+                    onclick: () => this.render(i)
+                }))
+            );
+
+            const title = this.makeEl('div', { className: 'current-month-label', 
+                innerText: `${targetMonth.getFullYear()}.${String(targetMonth.getMonth() + 1).padStart(2, '0')}` });
+
+            wrapper.appendChild(this.makeEl('div', { className: 'cal-top-bar' }, [tabs, title]));
+
+            // 요일 표시 줄
+            const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+            wrapper.appendChild(this.makeEl('div', { className: 'weekday-header' }, 
+                weekDays.map(d => this.makeEl('div', { innerText: d }))
+            ));
+
+            // 날짜 그리드 생성
+            const grid = this.makeEl('div', { className: 'calendar-grid' });
+            const pivot = new Date(targetMonth.getFullYear(), targetMonth.getMonth(), 1);
+            pivot.setDate(pivot.getDate() - pivot.getDay());
+
+            // 35칸(5주) 고정 생성
+            Array.from({ length: 35 }).forEach((_, i) => {
+                const dateObj = new Date(pivot);
+                dateObj.setDate(pivot.getDate() + i);
+                
+                const key = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
+                const status = this.dataMap[key] || "";
+                
+                const isOutside = dateObj.getMonth() !== targetMonth.getMonth();
+                const isToday = key === this.today;
+                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+
+                const box = this.makeEl('div', { className: 'date-box' });
+                if (isOutside) box.classList.add('is-dimmed');
+                if (isToday) box.classList.add('js-today');
+                if (isWeekend) box.classList.add('is-weekend');
+
+                // 마감 및 휴무 상태 처리
+                let badge = null;
+                if (status.includes("마감")) {
+                    box.classList.add('status-closed');
+                    const isSpecialColor = status.includes("오전") || status.includes("오후");
+                    const color = isSpecialColor ? "#000" : "#73b21c";
+                    if (isSpecialColor) box.style.borderColor = "#000";
+                    badge = this.makeEl('span', { className: 'badge-text type-magam', innerText: status, style: `color: ${color}` });
+                } else if (status.includes("휴무")) {
+                    box.classList.add('status-holiday');
+                    badge = this.makeEl('span', { className: 'badge-text type-holiday', innerText: "휴무" });
+                }
+
+                box.appendChild(this.makeEl('span', { className: 'date-num', innerText: dateObj.getDate() }));
+                if (badge) box.appendChild(badge);
+                
+                grid.appendChild(box);
+            });
+
+            wrapper.appendChild(grid);
+            this.container.appendChild(wrapper);
         }
     }
 
-    async function updateContactStatus() {
+    /**
+     * 나머지 데이터 연동 로직 (DOM API 리팩토링 버전)
+     */
+    async function updateStatus() {
         try {
-            const r = await fetch(CONFIG.statusCsv + "&t=" + Date.now());
+            const r = await fetch(DATA_SOURCES.status + "&t=" + Date.now());
             const text = await r.text();
-            const val = text.split(/\r?\n/)[0].split(",")[1].replace(/['"]/g, "").trim();
-            const btnMap = { '온라인': 'btn-online', '자리비움': 'btn-away', '오프라인': 'btn-offline' };
-            const classMap = { '온라인': 'active-online', '자리비움': 'active-away', '오프라인': 'active-offline' };
-            Object.values(btnMap).forEach(id => document.getElementById(id).classList.remove('active-online', 'active-away', 'active-offline'));
-            if (btnMap[val]) document.getElementById(btnMap[val]).classList.add(classMap[val]);
+            const val = stripQuotes(text.split(/\r?\n/)[0].split(",")[1]);
+            const btnIds = { '온라인': 'btn-online', '자리비움': 'btn-away', '오프라인': 'btn-offline' };
+            const classNames = { '온라인': 'active-online', '자리비움': 'active-away', '오프라인': 'active-offline' };
+            Object.values(btnIds).forEach(id => document.getElementById(id).classList.remove('active-online', 'active-away', 'active-offline'));
+            if (btnIds[val]) document.getElementById(btnIds[val]).classList.add(classNames[val]);
         } catch (e) {}
     }
 
-    async function initPriceList() {
+    async function fetchMustRead() {
+        const grid = document.getElementById('mustReadGrid');
+        try {
+            const res = await fetch(DATA_SOURCES.rules + "&t=" + Date.now());
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n/).slice(1);
+            const categories = {};
+            rows.forEach(row => {
+                const cols = parseCsvRow(row);
+                if (cols.length >= 2) {
+                    const cat = stripQuotes(cols[0]);
+                    const content = stripQuotes(cols[1]).replace(/\|/g, '<br>');
+                    if (!categories[cat]) categories[cat] = [];
+                    if (content) categories[cat].push(content);
+                }
+            });
+            grid.innerHTML = '';
+            Object.keys(categories).forEach(title => {
+                const item = document.createElement('div');
+                item.className = 'must-read-item';
+                const h4 = document.createElement('h4'); h4.innerText = title;
+                const ul = document.createElement('ul');
+                categories[title].forEach(liTxt => {
+                    const li = document.createElement('li'); li.innerHTML = liTxt;
+                    ul.appendChild(li);
+                });
+                item.append(h4, ul);
+                grid.appendChild(item);
+            });
+        } catch (e) {}
+    }
+
+    async function fetchWorkflow() {
+        const container = document.getElementById('processContainer');
+        try {
+            const res = await fetch(DATA_SOURCES.workflow + "&t=" + Date.now());
+            const csv = await res.text();
+            const rows = csv.split(/\r?\n/).slice(1);
+            container.innerHTML = '';
+            rows.forEach(row => {
+                const cols = parseCsvRow(row);
+                if (cols.length >= 2) {
+                    const stepNum = stripQuotes(cols[0]);
+                    let titleText = stripQuotes(cols[1]);
+                    const descText = stripQuotes(cols[2]);
+                    
+                    const item = document.createElement('div'); item.className = 'process-item';
+                    const numBadge = document.createElement('div'); numBadge.className = 'process-step-num'; numBadge.innerText = stepNum;
+                    const contentArea = document.createElement('div'); contentArea.className = 'process-content';
+                    const h4 = document.createElement('h4');
+                    if (titleText.includes('>')) {
+                        titleText = titleText.replace(/>/g, '▶');
+                        h4.style.color = '#555';
+                    }
+                    h4.innerText = titleText;
+                    contentArea.appendChild(h4);
+                    if (descText) {
+                        const p = document.createElement('p'); p.innerText = descText;
+                        contentArea.appendChild(p);
+                    }
+                    item.append(numBadge, contentArea);
+                    container.appendChild(item);
+                }
+            });
+        } catch (e) {}
+    }
+
+    async function fetchPrices() {
         const container = document.getElementById('priceContainer');
         try {
             const [catRes, itemRes] = await Promise.all([
-                fetch(CONFIG.priceCatCsv + "&t=" + Date.now()).then(r => r.text()),
-                fetch(CONFIG.priceCsv + "&t=" + Date.now()).then(r => r.text())
+                fetch(DATA_SOURCES.priceCats + "&t=" + Date.now()).then(r => r.text()),
+                fetch(DATA_SOURCES.prices + "&t=" + Date.now()).then(r => r.text())
             ]);
-
             const catRows = catRes.split(/\r?\n/).slice(1);
-            const catData = [];
-            catRows.forEach(row => {
-                const cols = safeParse(row);
-                if (cols.length >= 2) {
-                    const name = cols[0].replace(/['"]/g, "").trim();
-                    const desc = cols[1].replace(/['"]/g, "").trim().replace(/\|/g, '<br>');
-                    catData.push({ name, desc });
-                }
-            });
-
             const itemRows = itemRes.split(/\r?\n/).slice(1);
-            const itemGroups = {};
-            itemRows.forEach(row => {
-                const cols = safeParse(row);
-                if (cols.length >= 2) {
-                    const cat = cols[0].replace(/['"]/g, "").trim();
-                    const name = cols[1].replace(/['"]/g, "").trim();
-                    const price = cols[2] ? cols[2].replace(/['"]/g, "").trim() : "";
-                    if (!itemGroups[cat]) itemGroups[cat] = [];
-                    itemGroups[cat].push({ name, price });
+            const priceMap = {};
+            itemRows.forEach(r => {
+                const c = parseCsvRow(r);
+                if (c.length >= 2) {
+                    const group = stripQuotes(c[0]);
+                    if (!priceMap[group]) priceMap[group] = [];
+                    priceMap[group].push({ name: stripQuotes(c[1]), price: stripQuotes(c[2]) });
                 }
             });
-
-            let html = '';
-            catData.forEach(cat => {
-                const items = itemGroups[cat.name] || [];
+            container.innerHTML = '';
+            catRows.forEach(r => {
+                const c = parseCsvRow(r);
+                if (c.length < 2) return;
+                const catName = stripQuotes(c[0]);
+                const catDesc = stripQuotes(c[1]).replace(/\|/g, '<br>');
+                const items = priceMap[catName] || [];
                 if (items.length === 0) return;
-                html += `
-                <div class="price-category">
-                    <span class="price-cat-name">${cat.name}</span>
-                    <p class="price-cat-desc">${cat.desc}</p>
-                    <div class="price-items-list">
-                        ${items.map(item => `<div class="price-item"><span class="price-name">${item.name}</span><span class="price-val">${item.price}</span></div>`).join('')}
-                    </div>
-                </div>`;
+
+                const catBox = document.createElement('div'); catBox.className = 'price-category';
+                const label = document.createElement('span'); label.className = 'price-cat-name'; label.innerText = catName;
+                const descPara = document.createElement('p'); descPara.className = 'price-cat-desc'; descPara.innerHTML = catDesc;
+                const list = document.createElement('div');
+                items.forEach(it => {
+                    const row = document.createElement('div'); row.className = 'price-item';
+                    row.innerHTML = `<span class="price-name">${it.name}</span><span class="price-val">${it.price}</span>`;
+                    list.appendChild(row);
+                });
+                catBox.append(label, descPara, list);
+                container.appendChild(catBox);
             });
-            container.innerHTML = html;
-        } catch (e) { container.innerHTML = '로드 실패'; }
+        } catch (e) {}
     }
 
-    async function initPortfolio() {
+    async function fetchPortfolio() {
         const nav = document.getElementById('portfolioNav');
         const container = document.getElementById('portfolioContainer');
         try {
-            const res = await fetch(CONFIG.portfolioCsv + "&t=" + Date.now());
+            const res = await fetch(DATA_SOURCES.works + "&t=" + Date.now());
             const text = await res.text();
             const rows = text.split(/\r?\n/).slice(1);
-            const data = {};
-            PORTFOLIO_CATS.forEach(c => data[c] = []);
+            const galleryData = {};
+            PORTFOLIO_LABELS.forEach(l => galleryData[l] = []);
             rows.forEach(row => {
-                const cols = safeParse(row);
+                const cols = parseCsvRow(row);
                 if (cols.length >= 2) {
-                    const cat = cols[0].replace(/['"]/g, "").trim();
-                    const id = cols[1].replace(/['"]/g, "").trim();
-                    const tags = cols[2] ? cols[2].replace(/['"]/g, "").trim().split(',').map(t => t.trim()) : [];
-                    if (data[cat]) data[cat].push({ id, tags });
+                    const cat = stripQuotes(cols[0]);
+                    const vidId = stripQuotes(cols[1]);
+                    const tags = cols[2] ? stripQuotes(cols[2]).split(',').map(t => t.trim()) : [];
+                    if (galleryData[cat]) galleryData[cat].push({ vidId, tags });
                 }
             });
             nav.innerHTML = ''; container.innerHTML = '';
-            PORTFOLIO_CATS.forEach((cat, idx) => {
+            PORTFOLIO_LABELS.forEach((cat, idx) => {
                 const btn = document.createElement('button');
                 btn.innerText = cat; if (idx === 0) btn.className = 'active';
-                btn.onclick = () => switchPortfolio(cat, btn);
+                btn.onclick = () => changePortfolio(cat, btn);
                 nav.appendChild(btn);
-                const sec = document.createElement('div');
-                sec.className = `portfolio-sec ${idx === 0 ? 'active' : ''}`;
-                sec.id = `port-sec-${cat}`;
-                if (data[cat].length === 0) { sec.innerHTML = `<div class="coming-soon">COMING SOON</div>`; }
-                else { sec.innerHTML = renderPortfolioSlider(data[cat], cat); }
-                container.appendChild(sec);
-                if (data[cat].length > 0) setupSliderLogic(sec);
+                const section = document.createElement('div');
+                section.className = `portfolio-sec ${idx === 0 ? 'active' : ''}`;
+                section.id = `port-sec-${cat}`;
+                if (galleryData[cat].length === 0) { section.innerHTML = `<div class="coming-soon">COMING SOON</div>`; }
+                else { section.innerHTML = buildSlider(galleryData[cat]); }
+                container.appendChild(section);
+                if (galleryData[cat].length > 0) initSliderLogic(section);
             });
-        } catch (e) { container.innerHTML = "데이터 로드 실패"; }
+        } catch (e) {}
     }
 
-    function renderPortfolioSlider(list, cat) {
-        return `<div class="portfolio-stage">${list.map((v, i) => `<div class="portfolio-slide ${i===0?'active':''}" data-index="${i}"><iframe data-src="https://www.youtube.com/embed/${v.id}?rel=0" allowfullscreen></iframe></div>`).join('')}<button class="arrow arrow-prev">❮</button><button class="arrow arrow-next">❯</button></div><div class="tag-container-wrap">${list.map((v, i) => `<div class="tag-wrap" data-index="${i}" style="display:${i===0?'flex':'none'}">${v.tags.map(t => `<span>#${t.replace('#','')}</span>`).join('')}</div>`).join('')}</div><div class="thumb-scroll">${list.map((v, i) => `<button class="thumb-btn ${i===0?'active':''}" data-index="${i}"><img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg"></button>`).join('')}</div>`;
+    function buildSlider(list) {
+        return `<div class="portfolio-stage">${list.map((v, i) => `<div class="portfolio-slide ${i===0?'active':''}" data-index="${i}"><iframe data-src="https://www.youtube.com/embed/${v.vidId}?rel=0" allowfullscreen></iframe></div>`).join('')}<button class="arrow arrow-prev">❮</button><button class="arrow arrow-next">❯</button></div><div class="tag-container-wrap">${list.map((v, i) => `<div class="tag-wrap" data-index="${i}" style="display:${i===0?'flex':'none'}">${v.tags.map(t => `<span>#${t.replace('#','')}</span>`).join('')}</div>`).join('')}</div><div class="thumb-scroll">${list.map((v, i) => `<button class="thumb-btn ${i===0?'active':''}" data-index="${i}"><img src="https://img.youtube.com/vi/${v.vidId}/mqdefault.jpg"></button>`).join('')}</div>`;
     }
 
-    function setupSliderLogic(sec) {
+    function initSliderLogic(sec) {
         let cur = 0; const slides = sec.querySelectorAll('.portfolio-slide');
         const tags = sec.querySelectorAll('.tag-wrap'); const thumbs = sec.querySelectorAll('.thumb-btn');
         const total = slides.length;
         const move = (idx) => {
             cur = (idx + total) % total;
             slides.forEach((s, i) => {
-                const active = i === cur; s.classList.toggle('active', active); tags[i].style.display = active ? 'flex' : 'none'; thumbs[i].classList.toggle('active', active);
+                const active = i === cur; s.classList.toggle('active', active); 
+                tags[i].style.display = active ? 'flex' : 'none'; 
+                thumbs[i].classList.toggle('active', active);
                 if (active) { const ifr = s.querySelector('iframe'); if (!ifr.src) ifr.src = ifr.dataset.src; }
             });
         };
@@ -503,7 +644,7 @@
         const firstIfr = slides[0].querySelector('iframe'); if(firstIfr) firstIfr.src = firstIfr.dataset.src;
     }
 
-    function switchPortfolio(cat, btn) {
+    function changePortfolio(cat, btn) {
         document.querySelectorAll('.portfolio-nav button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.portfolio-sec').forEach(s => s.classList.remove('active'));
@@ -513,112 +654,51 @@
         if (firstIfr && !firstIfr.src) firstIfr.src = firstIfr.dataset.src;
     }
 
-    function normalizeDate(dateStr) {
-        if (!dateStr) return "";
-        const p = dateStr.replace(/[^0-9]/g, '-').split('-').filter(x => x !== "");
-        if (p.length < 3) return "";
-        const y = p[0].length === 4 ? p[0] : (p[2].length === 4 ? p[2] : p[0]);
-        const m = p[0].length === 4 ? p[1] : p[0];
-        const d = p[0].length === 4 ? p[2] : p[1];
-        return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    /**
+     * 신청 양식 관련 이벤트
+     */
+    function handleToggle(qId, val, btn) {
+        formState[qId] = val;
+        btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const condDiv = document.getElementById(`${qId}-conditional`);
+        if (val === 'O') condDiv.classList.add('show');
+        else condDiv.classList.remove('show');
     }
 
-    async function initCalendar() {
-        const mount = document.querySelector("#scheduleCalendar");
+    async function copyDynamicForm() {
+        const valOf = (id) => document.getElementById(id).value || "(미기재)";
+        const ans5 = formState.q5 === 'O' ? `O (내용: ${valOf('q5_detail')})` : 'X';
+        const ans6 = formState.q6 === 'O' ? `O (내용: ${valOf('q6_detail')})` : 'X';
+
+        const text = `[유튜브 편집 신청 양식]\n\n① 유튜브 채널 링크: ${valOf('q1')}\n② 원본 영상 공유 링크: ${valOf('q2')}\n③ 원본/희망 최종 영상 길이: ${valOf('q3')}\n④ 영상 콘셉트 및 레퍼런스: ${valOf('q4')}\n⑤ 편집점 제공 여부: ${ans5}\n⑥ 영상 소스 제공 여부: ${ans6}\n⑦ 그 외 요청 사항: ${valOf('q7')}`;
+
         try {
-            const dRes = await fetch(CONFIG.datesCsv + "&cache=" + Date.now()).then(r => r.text());
-            const dateMap = new Map();
-            const rows = dRes.split(/\r?\n/);
-            rows.slice(1).forEach(row => {
-                const cols = row.split(',');
-                if (cols.length >= 2) {
-                    const key = normalizeDate(cols[0].replace(/['"]/g, ""));
-                    if (key) dateMap.set(key, cols[1].replace(/['"]/g, "").replace(/\s/g, ""));
-                }
-            });
-            const now = new Date();
-            const months = [new Date(now.getFullYear(), now.getMonth(), 1), new Date(now.getFullYear(), now.getMonth() + 1, 1)];
-            window._renderCal = (idx) => {
-                const target = months[idx];
-                const start = new Date(target.getFullYear(), target.getMonth(), 1);
-                start.setDate(start.getDate() - start.getDay());
-                let html = `<div class="scalendar"><div class="scalendar__head"><div class="scalendar__tabs">
-                ${months.map((m, i) => `<button class="scalendar__tab ${i===idx?'is-active':''}" onclick="_renderCal(${i})">${m.getMonth()+1}월</button>`).join('')}
-                </div><div class="scalendar__title">${target.getFullYear()}.${String(target.getMonth()+1).padStart(2, '0')}</div></div>
-                <div class="scalendar__weekdays"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div>
-                <div class="scalendar__grid">`;
-                for (let i = 0; i < 35; i++) {
-                    const d = new Date(start); d.setDate(start.getDate() + i);
-                    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                    const status = dateMap.get(key) || "";
-                    const isOutside = d.getMonth() !== target.getMonth();
-                    const isToday = key === new Date().toISOString().slice(0, 10);
-                    let stateClass = ""; let statusText = ""; let cellStyle = "";
-                    if (status.includes("마감")) { 
-                        stateClass = "is-closed"; 
-                        const mColor = (status.includes("오전") || status.includes("오후")) ? "#000000" : "#73b21c";
-                        statusText = `<span class="status-text" style="color:${mColor}">${status}</span>`;
-                        if(status.includes("오전") || status.includes("오후")) cellStyle = `style="border-color:#000"`;
-                    }
-                    else if (status.includes("휴무")) { stateClass = "is-holiday"; statusText = `<span class="status-text holiday">휴무</span>`; }
-                    html += `<div class="scalendar__cell ${isOutside?'is-outside':''} ${d.getDay()===0||d.getDay()===6?'is-sun':''} ${isToday?'is-today':''} ${stateClass}" ${cellStyle}><span class="scalendar__date">${d.getDate()}</span>${statusText}</div>`;
-                }
-                mount.innerHTML = html + `</div></div>`;
-            }
-            _renderCal(0);
-        } catch (e) {}
+            await navigator.clipboard.writeText(text);
+            alert('신청 양식이 복사되었습니다!');
+        } catch (err) {
+            const ta = document.createElement("textarea");
+            ta.value = text; document.body.appendChild(ta);
+            ta.select(); document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('신청 양식이 복사되었습니다!');
+        }
     }
 
-    async function initMustRead() {
-        const grid = document.getElementById('mustReadGrid');
-        try {
-            const res = await fetch(CONFIG.mustReadCsv + "&t=" + Date.now());
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n/).slice(1);
-            const categories = {};
-            rows.forEach(row => {
-                const cols = safeParse(row);
-                if (cols.length >= 2) {
-                    const cat = cols[0].replace(/['"]/g, "").trim();
-                    const content = cols[1].replace(/['"]/g, "").trim().replace(/\|/g, '<br>');
-                    if (!categories[cat]) categories[cat] = [];
-                    if (content) categories[cat].push(content);
-                }
-            });
-            let html = '';
-            for (const [title, list] of Object.entries(categories)) {
-                html += `<div class="must-read-item"><h4>${title}</h4><ul>${list.map(li => `<li>${li}</li>`).join('')}</ul></div>`;
-            }
-            grid.innerHTML = html;
-        } catch (e) {}
-    }
-
-    async function initProcess() {
-        const container = document.getElementById('processContainer');
-        try {
-            const res = await fetch(CONFIG.processCsv + "&t=" + Date.now());
-            const csv = await res.text();
-            const rows = csv.split(/\r?\n/).slice(1);
-            let html = '';
-            rows.forEach(row => {
-                const cols = safeParse(row);
-                if (cols.length >= 2) {
-                    const step = cols[0].replace(/['"]/g, "").trim();
-                    let title = cols[1].replace(/['"]/g, "").trim();
-                    let titleAttr = "";
-                    if (title.includes('>')) {
-                        title = title.replace(/>/g, '▶');
-                        titleAttr = 'style="color: #555;"';
-                    }
-                    const desc = cols[2] ? cols[2].replace(/['"]/g, "").trim() : "";
-                    html += `<div class="process-item"><div class="process-step-num">${step}</div><div class="process-content"><h4 ${titleAttr}>${title}</h4>${desc ? `<p>${desc}</p>` : ''}</div></div>`;
-                }
-            });
-            container.innerHTML = html;
-        } catch (e) {}
-    }
-
-    updateContactStatus(); initCalendar(); initPriceList(); initMustRead(); initProcess(); initPortfolio(); setInterval(updateContactStatus, 15000);
+    /**
+     * 실행부
+     */
+    const myCal = new ScheduleCalendar('calendarMount');
+    
+    updateStatus();      // 현재 연락 상태 업데이트
+    myCal.loadData();    // 캘린더 일정 로드
+    fetchPrices();       // 가격표 로드
+    fetchMustRead();     // 필독 사항 로드
+    fetchWorkflow();     // 프로세스 로드
+    fetchPortfolio();    // 포트폴리오 로드
+    
+    // 15초마다 연락 상태 자동 갱신
+    setInterval(updateStatus, 15000);
 </script>
 
 </body>
