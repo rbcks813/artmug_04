@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Type Switch + Slider (Hashtag Sync)</title>
+<style>
+:root {
+  --main-color: #ffd64f; /* 버튼 활성화 색상 */
+  --tag-bg: #49200010;    /* 해시태그 배경색 */
+  --tag-border: #49200050; /* 해시태그 테두리 */
+  --tag-text: #492000;   /* 해시태그 글자색 */
+}
+
+[data-type-buttons] {
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin:30px 0 20px;
+}
+[data-type-buttons] button {
+  padding:10px 20px;
+  border-radius:8px;
+  border:0;
+  cursor:pointer;
+  font-size:16px;
+  background:#eee;
+  transition: background .25s, transform .25s;
+}
+[data-type-buttons] button[data-active="true"] {
+  background:var(--main-color);
+  color:#222;
+  font-weight: bold;
+  transform:translateY(-2px);
+}
+
+section[data-type] {
+  display:none;
+}
+section[data-type][data-active="true"] {
+  display:block;
+}
+
+html,body {
+  height:100%; margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background:#fff; color:#222;
+}
+
+div[data-root] {
+  max-width:1180px; margin:10px auto 36px;
+  background:#fff; border-radius:16px;
+  padding:22px; box-shadow:0 8px 30px rgba(20,20,40,0.08);
+  box-sizing:border-box;
+}
+
+div[data-root] > div[data-stage] {
+  position:relative; width:100%; height:560px;
+  border-radius:12px; overflow:hidden;
+  background:#eeeeee;
+  display:flex; align-items:center; justify-content:center;
+}
+
+[data-stage] > div[data-slide] {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  transition: transform 420ms cubic-bezier(.2,.9,.3,1), opacity 300ms;
+  transform: translateX(10%); opacity:0; pointer-events:none;
+}
+[data-stage] > div[data-slide][data-active="true"] {
+  transform: translateX(0); opacity:1; pointer-events:auto;
+}
+
+[data-slide] iframe {
+  max-width:880px; width:80%; height:auto; aspect-ratio:16/9;
+  border:0; border-radius:8px;
+  box-shadow: 0 5px 10px rgba(20,20,20,0.2);
+  background:#000;
+}
+
+[data-stage] > button[data-action="prev"],
+[data-stage] > button[data-action="next"] {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:44px; height:44px; border-radius:999px;
+  border:0; background:rgba(255,255,255,0.95);
+  box-shadow:0 6px 18px rgba(20,20,40,0.08);
+  cursor:pointer; display:flex; z-index:10;
+  align-items:center; justify-content:center;
+  font-size:18px; user-select:none;
+}
+[data-stage] > button[data-action="prev"] { left:14px; }
+[data-stage] > button[data-action="next"] { right:14px; }
+
+div[data-root] > div[data-tags-container] {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+[data-tags-container] > div[data-tags] {
+  display: none;
+  gap: 10px;
+}
+[data-tags-container] > div[data-tags][data-active="true"] {
+  display: flex;
+}
+[data-tags] span {
+  padding: 8px 18px;
+  border-radius: 50px;
+  background: var(--tag-bg);
+  border: 1.5px solid var(--tag-border);
+  color: var(--tag-text);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+/* 도트 */
+div[data-root] > div[data-dots] {
+  margin-top:16px; display:none;/* 나타나려면 flex변경 */ gap:8px;
+  justify-content:center; align-items:center;
+}
+[data-dots] > button[data-dot] {
+  width:12px; height:12px; border-radius:999px;
+  border:0; background:#d9d9db; cursor:pointer;
+}
+[data-dots] > button[data-dot][data-active="true"] {
+  background:var(--main-color); transform:scale(1.15);
+}
+
+div[data-root] > div[data-thumbs-wrapper] {
+  margin-top:24px; position:relative;
+}
+[data-thumbs-wrapper] > div[data-thumbs] {
+  display:flex; gap:12px; overflow-x:auto; padding:10px 5px;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+[data-thumbs] > button[data-thumb] {
+  flex:0 0 auto; width:180px; aspect-ratio:16/9;
+  border-radius:8px; border:3px solid transparent; padding:0;
+  background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  cursor:pointer; overflow:hidden; transition: all 0.2s;
+}
+[data-thumb] > img {
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+[data-thumbs] > button[data-thumb][data-active="true"] {
+  border-color:var(--main-color); transform:translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+[data-thumbs]::-webkit-scrollbar {
+  height: 10px;
+}
+
+[data-thumbs]::-webkit-scrollbar-track {
+  background: #e8e8ec;
+  border-radius: 10px;
+}
+
+[data-thumbs]::-webkit-scrollbar-thumb {
+  background: var(--main-color);
+  border-radius: 10px;
+}
+
+[data-thumbs]::-webkit-scrollbar-thumb:hover {
+  background: var(--main-color);
+}
+
+[data-thumbs] {
+  scrollbar-color: var(--main-color) #e8e8ec;
+  scrollbar-width: thin;
+}
+
+</style>
+</head>
+<body>
+
+    <div data-type-buttons></div>
+    <div id="type-container"></div>
+
+<script>
+// ------------------- 영상수정 -------------------
+const videoData = {
+    A: {
+        title: "로블록스",
+        list: [
+            { id: "OrKo9rCpblo", tags: ["#프리미엄", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "_96YcJY-vtQ", tags: ["#프리미엄", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "02Wv5e81HLU", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "D8wdZRJNbf8", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "aF9mAzdOHmM", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "d1F9zWoxJCY", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "rogxyO71TzA", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "TdN2jdv9TnU", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "HJ9xXzAH7Ek", tags: ["#디럭스", "#로블록스", "#99 Nights in the Forest", "#꽥"] },
+            { id: "wfgSubK0l2U", tags: ["#디럭스", "#로블록스", "#RIVALS", "#꽥"] },
+            { id: "daHC4H3BSMk", tags: ["#디럭스", "#로블록스", "#RIVALS", "#꽥"] },
+            { id: "2kgiSs7UA7w", tags: ["#디럭스", "#로블록스", "#월홉 타워", "#모양몬"] },
+            { id: "1WqinR5ZFBs", tags: ["#디럭스", "#로블록스", "#월홉 타워", "#모양몬"] },
+            { id: "W-AHtpFJGCU", tags: ["#디럭스", "#로블록스", "#월홉 타워", "#모양몬"] }
+        ]
+    },
+    B: {
+        title: "그 외 게임",
+        list: [
+            { id: "5U90ixKicUM", tags: ["#프리미엄", "#발로란트", "#핑맨"] },
+            { id: "pDdUdu1D4k8", tags: ["#프리미엄", "#피망 뉴맞고", "#광고", "#눈꽃"] },
+            { id: "H3U7hzk-MWs", tags: ["#프리미엄", "#해리포터 깨어난 마법", "#광고", "#눈꽃"] },
+            { id: "PYr7AS76MOQ", tags: ["#프리미엄", "#Eggy Party", "#광고", "#꽥"] },
+            { id: "VcLxk7XQnEQ", tags: ["#디럭스", "#마인크래프트", "뉴비", "#식스리"] },
+            { id: "-aqF-ADfusg", tags: ["#디럭스", "#마인크래프트", "#뉴띵서버", "#루태"] },
+            { id: "6h4tYC6pTvs", tags: ["#디럭스", "#마인크래프트", "#뉴띵서버", "#루태"] },
+            { id: "RTIFAUXVIBc", tags: ["#디럭스", "#마인크래프트", "#뉴띵서버", "#루태"] },
+            { id: "UP7e_SnQrq4", tags: ["#디럭스", "#메이플스토리", "#식스리"] },
+            { id: "ROOMgOsn6i8", tags: ["#디럭스", "#메이플스토리", "#식스리"] },
+            { id: "_QFbrSX0PEU", tags: ["#디럭스", "#메이플스토리", "#식스리"] },
+            { id: "PO4caili8Qs", tags: ["#디럭스", "#메이플스토리", "#식스리"] },
+            { id: "vU9d17IVOII", tags: ["#디럭스", "#메이플스토리", "#밍몬"] },
+            { id: "mCFbP4_fTLQ", tags: ["#디럭스", "#메이플스토리", "#밍몬"] },
+            { id: "apZ-Sd4VCr0", tags: ["#디럭스", "#메이플스토리", "#화로"] },
+            { id: "uRK_0M9ublA", tags: ["#디럭스", "#메이플스토리", "#화로"] },
+            { id: "Rz4XH9LVTLA", tags: ["#디럭스", "#로스트아크", "#식스리"] },
+            { id: "fvt_i2AnXqY", tags: ["#디럭스", "#로스트아크", "#식스리"] },
+            { id: "lJeSYyVcC_s", tags: ["#디럭스", "#로스트아크", "#식스리"] },
+            { id: "Qt-iZsZblq8", tags: ["#디럭스", "#로스트아크", "#식스리"] },
+            { id: "ub_pklRrYLs", tags: ["#디럭스", "#Two Point Museum", "#붉은새"] },
+            { id: "a-SSq-QFggQ", tags: ["#디럭스", "#Prison Escape Simulator", "#붉은새"] },
+            { id: "9zJo-cAX0_c", tags: ["#디럭스", "#Victoria 3", "#붉은새"] },
+            { id: "oHVVlikO6u8", tags: ["#디럭스", "#Victoria 3", "#붉은새"] },
+            { id: "MI_fffbHMQg", tags: ["#프리미엄", "#호그와트 레거시", "#인휘"] },
+            { id: "re49_WQTEO8", tags: ["#디럭스", "#World Box", "#루태"] },
+            { id: "v11ICL9ei0E", tags: ["#디럭스", "#어몽어스", "#루태"] },
+            { id: "dbX9OmRLvXM", tags: ["#디럭스", "#Make Good Choices", "#히게"] }
+        ]
+    },
+    C: {
+        title: "저스트 채팅",
+        list: [
+            { id: "Xsy29TUcnck", tags: ["#디럭스", "#버츄얼 데뷔", "#매맴찌"] },
+            { id: "lIKV5H2VVBU", tags: ["#디럭스", "#저스트 채팅", "#위즐리어카"] },
+            { id: "2X-pgPT74AM", tags: ["#디럭스", "#리뷰", "#참외몬"] },
+            { id: "GwVtIRJVQWw", tags: ["#디럭스", "#저스트 채팅", "#설권"] },
+            { id: "T2HgnXpY53o", tags: ["#디럭스", "#먹방", "#식스리"] },
+            { id: "zygZ60-kifc", tags: ["#디럭스", "#고민 상담", "#식스리"] },
+            { id: "yXSnNJPJ-I0", tags: ["#디럭스", "#저스트 채팅", "#식스리"] },
+            { id: "F58pFvbnGuE", tags: ["#디럭스", "#콘텐츠 월드컵", "#루태"] },
+            { id: "eYzTvddNNbg", tags: ["#디럭스", "#저스트 채팅", "#루태"] },
+            { id: "30EOypjEbqg", tags: ["#디럭스", "#저스트 채팅", "#유메"] },
+            { id: "BAGKATNWG-I", tags: ["#디럭스", "#저스트 채팅", "#루태"] },
+            { id: "LCqp-6-gjks", tags: ["#디럭스", "#먹방", "#루태"] }
+        ]
+    },
+    D: {
+        title: "정보 전달",
+        list: [
+            { id: "iCrzafsi0Yg", tags: ["#디럭스", "#Live2D 강의", "#Meter"] },
+            { id: "mNCjhKfXRFE", tags: ["#디럭스", "#Live2D 강의", "#Koyu"] },
+            { id: "gxCJlPIaj9s", tags: ["#스탠다드", "#Live2D 강의", "#Ann"] },
+            { id: "USuumjIrFkI", tags: ["#스탠다드", "#Live2D 강의", "#Ann"] },
+            { id: "iaYpTEB_1hg", tags: ["#스탠다드", "#Live2D 강의", "#Ann"] },
+            { id: "st2NikeDXn8", tags: ["#프리미엄", "#Live2D 강의", "#Ann"] },
+            { id: "TaWPBUNRO_M", tags: ["#프리미엄", "자기소개", "#구슬요"] },
+            { id: "1hTaopRwBCI", tags: ["#프리미엄", "자기소개", "#김병살"] },
+            { id: "wAQRlh_Qbf0", tags: ["#프리미엄", "자기소개", "#아드리챔"] },
+            { id: "2t2veS4xtKk", tags: ["#프리미엄", "자기소개", "#해리"] },
+            { id: "sOM-2htWnnc", tags: ["#프리미엄", "자기소개", "#지야"] },
+            { id: "QSLZIXwoPBA", tags: ["#프리미엄", "자기소개", "#비에타"] },
+            { id: "G6Gk4D7z3ng", tags: ["#프리미엄", "자기소개", "#감자가비"] },
+            { id: "3mBV8pad0pY", tags: ["#프리미엄", "자기소개", "#구나구나"] },
+            { id: "8FwgfblX_0k", tags: ["#프리미엄", "자기소개", "#포도당"] },
+            { id: "DbOgK2rl7bk", tags: ["#디럭스", "#공지사항", "#꽥"] },
+            { id: "DV_StHWFBGw", tags: ["#디럭스", "#마인크래프트 업데이트", "#번역 작업", "#루태"] },
+            { id: "23F7LBPGoOk", tags: ["#디럭스", "#마인크래프트 업데이트", "#번역 작업", "#루태"] }
+        ]
+    },
+    E: {
+        title: "V-log",
+        list: [
+            { id: "85YkiiiYaac", tags: ["#디럭스", "#V-log", "#모양몬"] },
+            { id: "lMTp5xt7q9Q", tags: ["#디럭스", "#V-log", "#모양몬"] },
+            { id: "-39LQ3TTOOg", tags: ["#디럭스", "#V-log", "#꽥"] },
+            { id: "SImY2wcRYI4", tags: ["#디럭스", "#V-log", "#꽥"] },
+            { id: "OT4LUFNxEQI", tags: ["#디럭스", "#요리", "#루태"] },
+            { id: "0dSUkw9MfkE", tags: ["#디럭스", "#요리", "#루태"] },
+            { id: "x5Gr6SJD0BA", tags: ["#디럭스", "#요리", "#플로리안"] }
+        ]
+    },
+    F: {
+        title: "쇼츠",
+        list: [
+            { id: "DzJiuIPNbyk", tags: ["#쇼츠", "#귀여움", "#쎄랑"] },
+            { id: "4pzZ8c8fhkE", tags: ["#쇼츠", "#귀여움", "#코마리 네무"] },
+            { id: "xpw_v-EKL_E", tags: ["#쇼츠", "#귀여움", "#코마리 네무"] },
+            { id: "gxqptoCFYgM", tags: ["#쇼츠", "#릴스", "#강주호"] },
+            { id: "BTbtQ9ecGFY", tags: ["#쇼츠", "#릴스", "#강주호"] },
+            { id: "rmRdsWCJS8U", tags: ["#쇼츠", "#릴스", "#미네이션 미미"] },
+            { id: "8yePLqVkDD8", tags: ["#쇼츠", "#메이플스토리", "#밍몬"] },
+            { id: "NNRn70lzpmM", tags: ["#쇼츠", "#메이플스토리", "#밍몬"] },
+            { id: "AilEEWQW2zA", tags: ["#쇼츠", "#메이플스토리", "#밍몬"] },
+            { id: "SS6VHaps6SI", tags: ["#쇼츠", "#버튜버 페이셜 테스트", "#라로시"] }
+        ]
+    },
+};
+
+function buildAllTypes() {
+    const typeButtonsWrap = document.querySelector("[data-type-buttons]");
+    const container = document.getElementById("type-container");
+
+    Object.keys(videoData).forEach((typeKey, idx) => {
+        const item = videoData[typeKey];
+
+        const btn = document.createElement("button");
+        btn.textContent = item.title;
+        btn.setAttribute("data-switch", typeKey);
+        if (idx === 0) btn.setAttribute("data-active", "true");
+        typeButtonsWrap.appendChild(btn);
+
+        const sec = document.createElement("section");
+        sec.setAttribute("data-type", typeKey);
+        if (idx === 0) sec.setAttribute("data-active", "true");
+        sec.innerHTML = generateSliderHTML(item.list);
+        container.appendChild(sec);
+    });
+}
+
+function generateSliderHTML(list) {
+    let slides = list.map((item, i) => `
+        <div data-slide data-index="${i}" data-active="${i===0}">
+            <iframe src="https://www.youtube.com/embed/${item.id}?enablejsapi=1" allowfullscreen></iframe>
+        </div>`).join("");
+
+    let tags = list.map((item, i) => `
+        <div data-tags data-index="${i}" data-active="${i===0}">
+            ${item.tags.map(tag => `<span>${tag}</span>`).join("")}
+        </div>`).join("");
+
+    let thumbs = list.map((item, i) => `
+        <button data-thumb data-index="${i}" ${i===0 ? 'data-active="true"' : ''}>
+            <img src="https://img.youtube.com/vi/${item.id}/mqdefault.jpg" alt="thumbnail">
+        </button>`).join("");
+
+    return `
+    <div data-root>
+        <div data-stage>
+            ${slides}
+            <button data-action="prev">❮</button>
+            <button data-action="next">❯</button>
+        </div>
+        
+        <div data-tags-container>
+            ${tags}
+        </div>
+
+        <div data-dots></div>
+        
+        <div data-thumbs-wrapper>
+            <div data-thumbs>${thumbs}</div>
+        </div>
+    </div>`;
+}
+
+function initSliders() {
+    const roots = document.querySelectorAll('div[data-root]');
+
+    roots.forEach(root => {
+        const stage = root.querySelector('[data-stage]');
+        const slides = Array.from(root.querySelectorAll('[data-slide]'));
+        const tagGroups = Array.from(root.querySelectorAll('[data-tags]'));
+        const thumbButtons = Array.from(root.querySelectorAll('[data-thumb]'));
+        const dotsWrap = root.querySelector('[data-dots]');
+        const prevBtn = root.querySelector('[data-action="prev"]');
+        const nextBtn = root.querySelector('[data-action="next"]');
+
+        let current = 0;
+        const total = slides.length;
+
+        function buildDots() {
+            dotsWrap.innerHTML = '';
+            for(let i=0; i<total; i++) {
+                const dot = document.createElement('button');
+                dot.setAttribute('data-dot', '');
+                if(i === current) dot.setAttribute('data-active', 'true');
+                dot.addEventListener('click', () => goTo(i));
+                dotsWrap.appendChild(dot);
+            }
+        }
+
+        function updateUI() {
+            slides.forEach((s, i) => s.setAttribute('data-active', i === current));
+            
+            tagGroups.forEach((tg, i) => tg.setAttribute('data-active', i === current));
+            
+            const dots = dotsWrap.querySelectorAll('[data-dot]');
+            dots.forEach((d, i) => i === current ? d.setAttribute('data-active', 'true') : d.removeAttribute('data-active'));
+
+            thumbButtons.forEach((t, i) => {
+                if(i === current) {
+                    t.setAttribute('data-active', 'true');
+                    t.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    t.removeAttribute('data-active');
+                }
+            });
+        }
+
+        function goTo(i) {
+            if(i < 0) i = total - 1;
+            if(i >= total) i = 0;
+            current = i;
+            updateUI();
+        }
+
+        prevBtn.addEventListener('click', () => goTo(current - 1));
+        nextBtn.addEventListener('click', () => goTo(current + 1));
+        
+        thumbButtons.forEach((btn, idx) => {
+            btn.addEventListener('click', () => goTo(idx));
+        });
+
+        buildDots();
+        updateUI();
+
+        function resizeLayout() {
+            const width = stage.clientWidth;
+            stage.style.height = (width * 9 / 16) + 'px';
+        }
+        window.addEventListener('resize', resizeLayout);
+        resizeLayout();
+    });
+}
+
+buildAllTypes();
+initSliders();
+
+const typeBtns = document.querySelectorAll('[data-type-buttons] button');
+const sections = document.querySelectorAll('section[data-type]');
+
+typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-switch');
+        
+        typeBtns.forEach(b => b.removeAttribute('data-active'));
+        btn.setAttribute('data-active', 'true');
+
+        sections.forEach(sec => {
+            if(sec.getAttribute('data-type') === target) {
+                sec.setAttribute('data-active', 'true');
+                window.dispatchEvent(new Event('resize'));
+            } else {
+                sec.removeAttribute('data-active');
+            }
+        });
+    });
+});
+
+(function() {
+    function sendHeight() {
+        const height = document.body.scrollHeight;
+        parent.postMessage({ type: "sliderHeight", value: height }, "*");
+    }
+    window.addEventListener('load', sendHeight);
+    window.addEventListener('resize', sendHeight);
+})();
+</script>
+</body>
+</html>
