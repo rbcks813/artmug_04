@@ -10,22 +10,7 @@
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
         @font-face { font-family: 'Paperozi'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
-        /* [핵심 수정] 모바일 스크롤 잠김 방지를 위한 설정 */
-        html, body {
-            margin: 0; padding: 0;
-            height: auto; /* 높이를 유동적으로 */
-            min-height: 100%;
-            font-family: 'Paperozi', sans-serif;
-            background-color: #ffffff;
-            color: #222;
-            line-height: 1.6;
-            word-break: keep-all;
-            /* 임베드 시 스크롤을 방해하는 요소 제거 */
-            overflow-x: visible !important; 
-            overflow-y: visible !important;
-            -webkit-overflow-scrolling: auto; 
-        }
-
+        /* [모바일 사이즈 및 레이아웃 엇나감 방지] */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -46,13 +31,18 @@
             --bg-weekend: #fff8f8;    
         }
 
-        /* 가로 삐져나감 방지는 컨테이너에서 처리 */
-        .container { 
-            max-width: 780px; 
-            margin: 0 auto; 
-            padding: 40px 20px; 
-            overflow: hidden; 
+        html, body {
+            margin: 0; padding: 0;
+            font-family: 'Paperozi', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            word-break: keep-all;
+            overflow-x: hidden; 
+            -webkit-overflow-scrolling: touch; 
         }
+
+        .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
 
         /* [아이콘 데코 스타일] */
         .deco-icon-inline { width: 24px; height: 24px; vertical-align: middle; margin-left: 6px; object-fit: contain; }
@@ -185,22 +175,47 @@
 
         @media (max-width: 650px) {
             .container { padding: 20px 15px; }
+            
+            /* CONTACT STATUS 모바일 최적화: 한 줄 유지 */
             .statusOptions { gap: 6px; width: 100%; justify-content: space-between; }
             .statusOption { padding: 10px 8px; font-size: 11.5px; flex: 1; justify-content: center; gap: 6px; }
+            .status-indicator { width: 8px; height: 8px; }
+
             .header-profile { flex-direction: column; text-align: center; gap: 20px; }
             .profile-img-box { width: 110px; height: 110px; }
             .main-card { padding: 25px 20px; margin-bottom: 30px; }
+            
             .deco-icon-floating, .deco-icon-floating-left { width: 45px; height: 45px; }
+            .pos-top-stick { top: -38px !important; } 
+            .pos-cart { top: -30px !important; } 
+            .pos-must-read { top: -32px !important; } 
+            .pos-price { top: 12px !important; } 
+            .deco-icon-floating { right: 15px; }
+            .deco-icon-floating-left { left: 15px; }
+            
             .scalendar { padding: 20px 10px; }
+            .scalendar__cell { min-height: 55px; gap: 2px; border-width: 2px; }
+            .scalendar__date { font-size: 13px; }
+            .scalendar__weekdays { font-size: 10px; }
+            .status-text { font-size: 9px; }
+
             .must-read-grid { grid-template-columns: 1fr; gap: 20px; }
             .process-item { flex-direction: column; padding: 20px; gap: 12px; }
+            
+            .price-cat-name { font-size: 18px; }
+            .price-cat-desc { font-size: 13px; margin-bottom: 15px; }
+            .price-name { font-size: 14px; }
+            .price-val { font-size: 15px; }
+
+            .portfolio-nav button { padding: 8px 16px; font-size: 12px; }
             .form-card { padding: 35px 20px; }
+            .form-copy-btn { font-size: 15px; padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-container">
+<div class="container">
     <section class="status-section">
         <div class="statusTitlePill"><span class="dot"></span><span class="titleText">CONTACT STATUS</span></div>
         <div class="statusOptions">
@@ -327,7 +342,6 @@
         const conditionalDiv = document.getElementById(`${qId}-conditional`);
         if (val === 'O') conditionalDiv.classList.add('show');
         else conditionalDiv.classList.remove('show');
-        sendHeight(); // 높이 변화가 있을 때 재전송
     }
 
     async function copyDynamicForm() {
@@ -345,33 +359,33 @@
 ⑥ 영상 소스 제공 여부: ${q6_ans}
 ⑦ 그 외 요청 사항: ${d('q7')}`;
 
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(fullText);
+                alert('신청 양식이 복사되었습니다!');
+                return;
+            } catch (err) {}
+        }
+
         try {
             const textArea = document.createElement("textarea");
             textArea.value = fullText;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
             document.body.appendChild(textArea);
+            textArea.focus();
             textArea.select();
-            document.execCommand('copy');
+            textArea.setSelectionRange(0, 99999); 
+            const successful = document.execCommand('copy');
             document.body.removeChild(textArea);
-            alert('신청 양식이 복사되었습니다!');
+            if(successful) alert('신청 양식이 복사되었습니다!');
+            else throw new Error();
         } catch (err) {
-            alert('복사에 실패했습니다.');
+            alert('복사에 실패했습니다. 내용을 드래그하여 수동으로 복사해 주세요.');
         }
     }
 
-    /* ---------------- 높이 전송 핵심 로직 ---------------- */
-    function sendHeight() {
-        if (window.parent) {
-            const height = document.body.scrollHeight || document.documentElement.scrollHeight;
-            window.parent.postMessage({ type: "sliderHeight", value: height }, "*");
-        }
-    }
-    window.addEventListener('load', sendHeight);
-    window.addEventListener('resize', sendHeight);
-    // 콘텐츠가 동적으로 로드될 때마다 높이를 갱신합니다.
-    const observer = new MutationObserver(sendHeight);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    /* ---------------- 데이터 로드 함수들 ---------------- */
     async function updateContactStatus() {
         try {
             const r = await fetch(CONFIG.statusCsv + "&t=" + Date.now());
@@ -391,6 +405,7 @@
                 fetch(CONFIG.priceCatCsv + "&t=" + Date.now()).then(r => r.text()),
                 fetch(CONFIG.priceCsv + "&t=" + Date.now()).then(r => r.text())
             ]);
+
             const catRows = catRes.split(/\r?\n/).slice(1);
             const catData = [];
             catRows.forEach(row => {
@@ -401,6 +416,7 @@
                     catData.push({ name, desc });
                 }
             });
+
             const itemRows = itemRes.split(/\r?\n/).slice(1);
             const itemGroups = {};
             itemRows.forEach(row => {
@@ -413,11 +429,19 @@
                     itemGroups[cat].push({ name, price });
                 }
             });
+
             let html = '';
             catData.forEach(cat => {
                 const items = itemGroups[cat.name] || [];
                 if (items.length === 0) return;
-                html += `<div class="price-category"><span class="price-cat-name">${cat.name}</span><p class="price-cat-desc">${cat.desc}</p><div class="price-items-list">${items.map(item => `<div class="price-item"><span class="price-name">${item.name}</span><span class="price-val">${item.price}</span></div>`).join('')}</div></div>`;
+                html += `
+                <div class="price-category">
+                    <span class="price-cat-name">${cat.name}</span>
+                    <p class="price-cat-desc">${cat.desc}</p>
+                    <div class="price-items-list">
+                        ${items.map(item => `<div class="price-item"><span class="price-name">${item.name}</span><span class="price-val">${item.price}</span></div>`).join('')}
+                    </div>
+                </div>`;
             });
             container.innerHTML = html;
         } catch (e) { container.innerHTML = '로드 실패'; }
@@ -487,7 +511,6 @@
         target.classList.add('active');
         const firstIfr = target.querySelector('.portfolio-slide.active iframe');
         if (firstIfr && !firstIfr.src) firstIfr.src = firstIfr.dataset.src;
-        sendHeight();
     }
 
     function normalizeDate(dateStr) {
@@ -531,12 +554,16 @@
                     const isOutside = d.getMonth() !== target.getMonth();
                     const isToday = key === new Date().toISOString().slice(0, 10);
                     let stateClass = ""; let statusText = ""; let cellStyle = "";
-                    if (status.includes("마감")) { stateClass = "is-closed"; const mColor = (status.includes("오전") || status.includes("오후")) ? "#000000" : "#73b21c"; statusText = `<span class="status-text" style="color:${mColor}">${status}</span>`; if(status.includes("오전") || status.includes("오후")) cellStyle = `style="border-color:#000"`; }
+                    if (status.includes("마감")) { 
+                        stateClass = "is-closed"; 
+                        const mColor = (status.includes("오전") || status.includes("오후")) ? "#000000" : "#73b21c";
+                        statusText = `<span class="status-text" style="color:${mColor}">${status}</span>`;
+                        if(status.includes("오전") || status.includes("오후")) cellStyle = `style="border-color:#000"`;
+                    }
                     else if (status.includes("휴무")) { stateClass = "is-holiday"; statusText = `<span class="status-text holiday">휴무</span>`; }
                     html += `<div class="scalendar__cell ${isOutside?'is-outside':''} ${d.getDay()===0||d.getDay()===6?'is-sun':''} ${isToday?'is-today':''} ${stateClass}" ${cellStyle}><span class="scalendar__date">${d.getDate()}</span>${statusText}</div>`;
                 }
                 mount.innerHTML = html + `</div></div>`;
-                sendHeight();
             }
             _renderCal(0);
         } catch (e) {}
@@ -559,9 +586,10 @@
                 }
             });
             let html = '';
-            for (const [title, list] of Object.entries(categories)) { html += `<div class="must-read-item"><h4>${title}</h4><ul>${list.map(li => `<li>${li}</li>`).join('')}</ul></div>`; }
+            for (const [title, list] of Object.entries(categories)) {
+                html += `<div class="must-read-item"><h4>${title}</h4><ul>${list.map(li => `<li>${li}</li>`).join('')}</ul></div>`;
+            }
             grid.innerHTML = html;
-            sendHeight();
         } catch (e) {}
     }
 
@@ -577,14 +605,16 @@
                 if (cols.length >= 2) {
                     const step = cols[0].replace(/['"]/g, "").trim();
                     let title = cols[1].replace(/['"]/g, "").trim();
-                    let titleAttr = title.includes('>') ? 'style="color: #555;"' : "";
-                    if (title.includes('>')) title = title.replace(/>/g, '▶');
+                    let titleAttr = "";
+                    if (title.includes('>')) {
+                        title = title.replace(/>/g, '▶');
+                        titleAttr = 'style="color: #555;"';
+                    }
                     const desc = cols[2] ? cols[2].replace(/['"]/g, "").trim() : "";
                     html += `<div class="process-item"><div class="process-step-num">${step}</div><div class="process-content"><h4 ${titleAttr}>${title}</h4>${desc ? `<p>${desc}</p>` : ''}</div></div>`;
                 }
             });
             container.innerHTML = html;
-            sendHeight();
         } catch (e) {}
     }
 
