@@ -26,7 +26,7 @@
             --status-online: #2ecc71;
             --status-away: #f1c40f;
             --status-offline: #e74c3c;
-            --color-magam: #333;      
+            --color-magam: #73b21c;      
             --color-holiday: #ff3b30;   
             --bg-weekend: #fff8f8;    
         }
@@ -45,6 +45,18 @@
 
         .container { max-width: 780px; margin: 0 auto; padding: 40px 20px; }
 
+        /* [아이콘 데코 스타일] */
+        .deco-icon-inline { width: 24px; height: 24px; vertical-align: middle; margin-left: 6px; object-fit: contain; }
+        .deco-icon-floating { position: absolute; top: -25px; right: 25px; width: 60px; height: 60px; object-fit: contain; pointer-events: none; z-index: 1; }
+        .deco-icon-floating-left { position: absolute; top: -25px; left: 25px; width: 60px; height: 60px; object-fit: contain; pointer-events: none; z-index: 1; }
+        .deco-icon-title { width: 35px; height: auto; margin-bottom: -5px; }
+
+        /* [위치 조정 특정 클래스] */
+        .pos-top-stick { top: -48px !important; } /* m5: 작가소개 */
+        .pos-cart { top: -40px !important; }      /* m7: 카트 */
+        .pos-must-read { top: -42px !important; } /* m1: 필독사항 */
+        .pos-price { top: 22px !important; }      /* m3: 가격표 텍스트 라인에 맞춤 */
+
         /* [1] 연락 가능 여부 */
         .status-section { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 50px; }
         .statusTitlePill { display: flex; align-items: center; gap: 8px; padding: 8px 24px; background: #fff; border-radius: 100px; border: 1px solid var(--border); font-size: 12px; font-weight: 900; color: #666; }
@@ -61,17 +73,18 @@
 
         /* 공통 카드 스타일 */
         .main-card {
+            position: relative; 
             background: var(--card); padding: 40px; border-radius: var(--radius-xl);
             border: 1px solid var(--border); margin-bottom: 40px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.02);
         }
-        .main-card h3 { font-size: 16px; font-weight: 900; margin: 0 0 25px 0; border-left: 4px solid #000; padding-left: 12px; text-transform: uppercase; }
+        .main-card h3 { position: relative; z-index: 2; font-size: 16px; font-weight: 900; margin: 0 0 25px 0; border-left: 4px solid #000; padding-left: 12px; text-transform: uppercase; }
 
         /* [2] 작가 프로필 */
         .header-profile { display: flex; align-items: center; gap: 35px; }
         .profile-img-box { flex-shrink: 0; width: 140px; height: 140px; border-radius: 30px; overflow: hidden; border: 1px solid var(--border); }
         .profile-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -1.5px; }
+        .profile-info h1 { font-size: 28px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -1.5px; display: flex; align-items: center; }
         .profile-info p { font-size: 15px; color: var(--text-sub); margin: 0; line-height: 1.7; }
 
         /* [3] 작업 캘린더 */
@@ -101,20 +114,20 @@
         .status-text.holiday { color: var(--color-holiday); }
 
         /* [4~6] 리스트 스타일 */
-        .must-read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .must-read-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; z-index: 2; }
         .must-read-item h4 { font-size: 14px; font-weight: 900; margin-bottom: 10px; }
         .must-read-item ul { list-style: none; padding: 0; margin: 0; font-size: 13.5px; color: #666; }
         .must-read-item li { margin-bottom: 6px; padding-left: 15px; position: relative; }
         .must-read-item li::before { content: '⛳'; position: absolute; left: 0; font-size: 9px; }
 
-        .process-container { display: flex; flex-direction: column; gap: 15px; }
+        .process-container { display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 2; }
         .process-item { display: flex; gap: 20px; background: #f9f9fb; padding: 25px; border-radius: var(--radius-lg); align-items: flex-start; }
         .process-step-num { background: #000; color: #fff; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 900; flex-shrink: 0; }
         .process-content h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 900; }
         .process-content p { margin: 0; font-size: 13.5px; color: #666; }
 
         /* 가격표 디자인 */
-        .price-category { margin-bottom: 45px; }
+        .price-category { margin-bottom: 45px; position: relative; z-index: 2; }
         .price-category:last-child { margin-bottom: 0; }
         .price-cat-name { font-size: 20px; font-weight: 900; color: #000; margin-bottom: 8px; letter-spacing: -0.5px; display: block; }
         .price-cat-desc { font-size: 14px; color: var(--text-sub); margin: 0 0 20px 0; line-height: 1.5; padding-bottom: 15px; border-bottom: 2px solid #000; }
@@ -144,8 +157,8 @@
         .coming-soon { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; background: #f9f9fb; border-radius: var(--radius-lg); color: #ccc; font-weight: 900; letter-spacing: 2px; }
 
         /* [8] 신청 양식 카드 */
-        .form-card { background: #000; color: #fff; padding: 50px 40px; border-radius: var(--radius-xl); }
-        .form-card h3 { color: #fff; border-left: 4px solid #fff; margin-bottom: 10px; padding-left: 12px; text-transform: uppercase; }
+        .form-card { position: relative; background: #000; color: #fff; padding: 50px 40px; border-radius: var(--radius-xl); }
+        .form-card h3 { color: #fff; border-left: 4px solid #fff; margin-bottom: 10px; padding-left: 12px; text-transform: uppercase; display: flex; align-items: center; }
         .form-card .subtitle { font-size: 13px; color: #888; margin-bottom: 30px; display: block; }
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #eee; }
@@ -167,6 +180,14 @@
             .header-profile { flex-direction: column; text-align: center; gap: 20px; }
             .profile-img-box { width: 110px; height: 110px; }
             .main-card { padding: 25px 20px; margin-bottom: 30px; }
+            
+            .deco-icon-floating, .deco-icon-floating-left { width: 45px; height: 45px; }
+            .pos-top-stick { top: -38px !important; } 
+            .pos-cart { top: -30px !important; } 
+            .pos-must-read { top: -32px !important; } 
+            .pos-price { top: 12px !important; } /* 모바일 가격표 높이 */
+            .deco-icon-floating { right: 15px; }
+            .deco-icon-floating-left { left: 15px; }
             
             .scalendar { padding: 20px 10px; }
             .scalendar__cell { min-height: 55px; gap: 2px; }
@@ -201,34 +222,39 @@
     </section>
 
     <header class="main-card header-profile">
+        <img src="https://github.com/rbcks813/artmug_04/blob/main/m5.png?raw=true" class="deco-icon-floating pos-top-stick" alt="데코">
         <div class="profile-img-box"><img src="https://github.com/rbcks813/artmug_04/blob/main/Log_logo.webp?raw=true" alt="현Log 작가"></div>
         <div class="profile-info">
             <h1>현Log 작가</h1>
-            <p>재미와 템포를 설계하는 영상 편집을 지향합니다.<br>장르에 구애받지 않고 다양한 콘텐츠를 제작하며, <b>골프 전문 지식</b>을 보유하여 영상미를 극대화합니다.</p>
+            <p>재미와 템포를 설계하는 영상 편집을 지향합니다.<br>장르에 구애받지 않고 다양한 콘텐츠를 제작하며,<br><b>골프 전문 지식</b>을 보유하여 영상미를 극대화합니다.</p>
         </div>
     </header>
 
     <section>
-        <div class="section-title">Schedule</div>
+        <div class="section-title">Schedule <img src="https://github.com/rbcks813/artmug_04/blob/main/m4.png?raw=true" class="deco-icon-title" alt="데코"></div>
         <div id="scheduleCalendar"></div>
     </section>
 
     <div class="main-card">
+        <img src="https://github.com/rbcks813/artmug_04/blob/main/m1.png?raw=true" class="deco-icon-floating pos-must-read" alt="데코">
         <h3>Must-Read</h3>
         <div id="mustReadGrid" class="must-read-grid">데이터 로딩 중...</div>
     </div>
 
     <div class="main-card">
+        <img src="https://github.com/rbcks813/artmug_04/blob/main/m7.png?raw=true" class="deco-icon-floating-left pos-cart" alt="데코">
         <h3>Work Process</h3>
         <div id="processContainer" class="process-container">데이터 로딩 중...</div>
     </div>
 
     <div class="main-card price-card">
+        <img src="https://github.com/rbcks813/artmug_04/blob/main/m3.png?raw=true" class="deco-icon-floating pos-price" alt="데코">
         <h3>Price List</h3>
         <div id="priceContainer">데이터 로딩 중...</div>
     </div>
 
     <div class="main-card">
+        <img src="https://github.com/rbcks813/artmug_04/blob/main/m2.png?raw=true" class="deco-icon-floating" alt="데코">
         <h3>Portfolio</h3>
         <div class="portfolio-nav" id="portfolioNav"></div>
         <div id="portfolioContainer">데이터 로딩 중...</div>
@@ -275,7 +301,7 @@
                 <button type="button" class="btn-toggle" onclick="handleToggle('q6', 'O', this)">O</button>
                 <button type="button" class="btn-toggle active" onclick="handleToggle('q6', 'X', this)">X</button>
             </div>
-            <div id="q6-conditional" class="conditional-input">
+            <div id="q6_detail-conditional" class="conditional-input">
                 <input type="text" id="q6_detail" class="form-input" placeholder="제공해 주실 소스 종류(BGM, 폰트 등)를 적어주세요.">
             </div>
         </div>
@@ -314,7 +340,6 @@
         else conditionalDiv.classList.remove('show');
     }
 
-    /* 모바일 대응 통합 복사 함수 */
     async function copyDynamicForm() {
         const d = (id) => document.getElementById(id).value || "(미기재)";
         let q5_ans = formState.q5 === 'O' ? `O (내용: ${d('q5_detail')})` : 'X';
@@ -330,7 +355,6 @@
 ⑥ 영상 소스 제공 여부: ${q6_ans}
 ⑦ 그 외 요청 사항: ${d('q7')}`;
 
-        // 방법 1: 최신 Clipboard API 시도
         if (navigator.clipboard && window.isSecureContext) {
             try {
                 await navigator.clipboard.writeText(fullText);
@@ -339,7 +363,6 @@
             } catch (err) {}
         }
 
-        // 방법 2: 구형/인앱 브라우저용 Fallback (가상 Textarea 생성)
         try {
             const textArea = document.createElement("textarea");
             textArea.value = fullText;
@@ -349,7 +372,7 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            textArea.setSelectionRange(0, 99999); // 모바일 iOS 대응
+            textArea.setSelectionRange(0, 99999); 
             const successful = document.execCommand('copy');
             document.body.removeChild(textArea);
             if(successful) alert('신청 양식이 복사되었습니다!');
@@ -526,10 +549,15 @@
                     const status = dateMap.get(key) || "";
                     const isOutside = d.getMonth() !== target.getMonth();
                     const isToday = key === new Date().toISOString().slice(0, 10);
-                    let stateClass = ""; let statusText = "";
-                    if (status.includes("마감")) { stateClass = "is-closed"; statusText = `<span class="status-text magam">${status}</span>`; }
+                    let stateClass = ""; let statusText = ""; let cellStyle = "";
+                    if (status.includes("마감")) { 
+                        stateClass = "is-closed"; 
+                        const mColor = (status.includes("오전") || status.includes("오후")) ? "#000000" : "#73b21c";
+                        statusText = `<span class="status-text" style="color:${mColor}">${status}</span>`;
+                        if(status.includes("오전") || status.includes("오후")) cellStyle = `style="border-color:#000"`;
+                    }
                     else if (status.includes("휴무")) { stateClass = "is-holiday"; statusText = `<span class="status-text holiday">휴무</span>`; }
-                    html += `<div class="scalendar__cell ${isOutside?'is-outside':''} ${d.getDay()===0||d.getDay()===6?'is-sun':''} ${isToday?'is-today':''} ${stateClass}"><span class="scalendar__date">${d.getDate()}</span>${statusText}</div>`;
+                    html += `<div class="scalendar__cell ${isOutside?'is-outside':''} ${d.getDay()===0||d.getDay()===6?'is-sun':''} ${isToday?'is-today':''} ${stateClass}" ${cellStyle}><span class="scalendar__date">${d.getDate()}</span>${statusText}</div>`;
                 }
                 mount.innerHTML = html + `</div></div>`;
             }
@@ -548,7 +576,8 @@
                 const cols = safeParse(row);
                 if (cols.length >= 2) {
                     const cat = cols[0].replace(/['"]/g, "").trim();
-                    const content = cols[1].replace(/['"]/g, "").trim();
+                    // 수정: |를 <br>로 치환하여 줄바꿈 지원
+                    const content = cols[1].replace(/['"]/g, "").trim().replace(/\|/g, '<br>');
                     if (!categories[cat]) categories[cat] = [];
                     if (content) categories[cat].push(content);
                 }
@@ -572,9 +601,15 @@
                 const cols = safeParse(row);
                 if (cols.length >= 2) {
                     const step = cols[0].replace(/['"]/g, "").trim();
-                    const title = cols[1].replace(/['"]/g, "").trim();
+                    let title = cols[1].replace(/['"]/g, "").trim();
+                    let titleAttr = "";
+                    // 수정: >가 포함되면 ▶로 변경하고 진회색(#555) 스타일 적용
+                    if (title.includes('>')) {
+                        title = title.replace(/>/g, '▶');
+                        titleAttr = 'style="color: #555;"';
+                    }
                     const desc = cols[2] ? cols[2].replace(/['"]/g, "").trim() : "";
-                    html += `<div class="process-item"><div class="process-step-num">${step}</div><div class="process-content"><h4>${title}</h4>${desc ? `<p>${desc}</p>` : ''}</div></div>`;
+                    html += `<div class="process-item"><div class="process-step-num">${step}</div><div class="process-content"><h4 ${titleAttr}>${title}</h4>${desc ? `<p>${desc}</p>` : ''}</div></div>`;
                 }
             });
             container.innerHTML = html;
